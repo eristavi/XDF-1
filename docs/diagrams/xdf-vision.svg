@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="780" viewBox="0 0 1400 780" role="img" aria-label="XDF-1 hybrid sensory intelligence: perception, reflexes, working state and memory">
+<title>XDF-1 hybrid sensory intelligence: perception, reflexes, working state and memory</title>
+<rect width="1400" height="780" fill="#0a1425"/>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#7892aa"/></marker></defs>
+<text x="700" y="44" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="27" font-weight="700">XDF-1  |  COMPUTING THAT PERCEIVES, DECIDES AND REMEMBERS</text>
+<text x="700" y="74" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="16" font-weight="400">50+ planned sensor types  /  asynchronous modalities  /  500 MB/s research input target</text>
+<rect x="60" y="107" width="220" height="79" rx="13" fill="#10253a" stroke="#7cb5ff" stroke-width="2"/>
+<text x="170.0" y="139" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="18" font-weight="700">KINEMATICS</text>
+<text x="170.0" y="162" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">IMU + position</text>
+<path d="M170 186 L170 216" fill="none" stroke="#7892aa" stroke-width="2.4" marker-end="url(#arr)"/>
+<rect x="335" y="107" width="220" height="79" rx="13" fill="#10253a" stroke="#7cb5ff" stroke-width="2"/>
+<text x="445.0" y="139" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="18" font-weight="700">SPACE</text>
+<text x="445.0" y="162" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">LiDAR + radar</text>
+<path d="M445 186 L445 216" fill="none" stroke="#7892aa" stroke-width="2.4" marker-end="url(#arr)"/>
+<rect x="610" y="107" width="220" height="79" rx="13" fill="#10253a" stroke="#7cb5ff" stroke-width="2"/>
+<text x="720.0" y="139" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="18" font-weight="700">VISION</text>
+<text x="720.0" y="162" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">Cameras + thermal</text>
+<path d="M720 186 L720 216" fill="none" stroke="#7892aa" stroke-width="2.4" marker-end="url(#arr)"/>
+<rect x="885" y="107" width="220" height="79" rx="13" fill="#10253a" stroke="#7cb5ff" stroke-width="2"/>
+<text x="995.0" y="139" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="18" font-weight="700">AUDIO</text>
+<text x="995.0" y="162" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">Microphone + vibration</text>
+<path d="M995 186 L995 216" fill="none" stroke="#7892aa" stroke-width="2.4" marker-end="url(#arr)"/>
+<rect x="1160" y="107" width="220" height="79" rx="13" fill="#10253a" stroke="#7cb5ff" stroke-width="2"/>
+<text x="1270.0" y="139" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="18" font-weight="700">OTHER</text>
+<text x="1270.0" y="162" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">Environment + bio</text>
+<path d="M1270 186 L1270 216" fill="none" stroke="#7892aa" stroke-width="2.4" marker-end="url(#arr)"/>
+<rect x="65" y="220" width="1270" height="80" rx="13" fill="#10253a" stroke="#4fe1d2" stroke-width="2"/>
+<text x="700.0" y="252" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="23" font-weight="700">USAL  /  UNIVERSAL SENSOR ACQUISITION</text>
+<text x="700.0" y="275" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">Protocol adapters + clock correlation + validity / quality + sampling policies</text>
+<path d="M700 300 V326 H365 V356" fill="none" stroke="#7cb5ff" stroke-width="2.2" marker-end="url(#arr)"/>
+<path d="M700 326 H1040 V356" fill="none" stroke="#7cb5ff" stroke-width="2.2" marker-end="url(#arr)"/>
+<rect x="72" y="358" width="586" height="90" rx="13" fill="#10253a" stroke="#7cb5ff" stroke-width="2"/>
+<text x="365.0" y="390" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="20" font-weight="700">RAW PAYLOAD DATA PLANE</text>
+<text x="365.0" y="413" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">External DRAM ring  •  DMA  •  camera / LiDAR / audio buffers</text>
+<rect x="742" y="358" width="586" height="90" rx="13" fill="#10253a" stroke="#4fe1d2" stroke-width="2"/>
+<text x="1035.0" y="390" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="20" font-weight="700">SEF  /  EVENT &amp; FEATURE PLANE</text>
+<text x="1035.0" y="413" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">Small timestamped observations  •  priorities  •  backpressure</text>
+<path d="M365 448 V480" fill="none" stroke="#7cb5ff" stroke-width="2.2" marker-end="url(#arr)"/>
+<path d="M1035 448 V480" fill="none" stroke="#4fe1d2" stroke-width="2.2" marker-end="url(#arr)"/>
+<rect x="72" y="482" width="586" height="94" rx="13" fill="#10253a" stroke="#e8a6f3" stroke-width="2"/>
+<text x="365.0" y="514" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="20" font-weight="700">NPE  /  NEURAL PERCEPTION</text>
+<text x="365.0" y="537" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">Specialist encoders  •  multimodal fusion  •  uncertainty</text>
+<rect x="742" y="482" width="586" height="94" rx="13" fill="#10253a" stroke="#ffd18a" stroke-width="2"/>
+<text x="1035.0" y="514" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="19" font-weight="700">XDF  /  FAST REFLEX + DECISION</text>
+<text x="1035.0" y="537" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">Tagged dataflow  •  rules  •  predictable control path</text>
+<path d="M658 528 H742" fill="none" stroke="#e8a6f3" stroke-width="2.2" marker-end="url(#arr)"/>
+<path d="M1035 576 V607 H700 V618" fill="none" stroke="#ffd18a" stroke-width="2.2" marker-end="url(#arr)"/>
+<path d="M365 576 V607 H700 V618" fill="none" stroke="#e8a6f3" stroke-width="2.2" marker-end="url(#arr)"/>
+<rect x="317" y="622" width="766" height="92" rx="13" fill="#10253a" stroke="#4fe1d2" stroke-width="2"/>
+<text x="700.0" y="654" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="20" font-weight="700">WORLD STATE + AMEE  /  SELECTIVE EXPERIENCE MEMORY</text>
+<text x="700.0" y="677" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">Live context in RAM  •  important episodes  •  long-term recall</text>
+<path d="M700 714 V737 H1345 V256 H1335" fill="none" stroke="#4fe1d2" stroke-width="2.2" marker-end="url(#arr)" stroke-dasharray="7 7"/>
+<text x="1060" y="751" fill="#4fe1d2" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="14" font-weight="400">feedback: attention, recall, adaptive sensing</text>
+</svg>

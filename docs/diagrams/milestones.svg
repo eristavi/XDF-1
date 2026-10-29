@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="426" viewBox="0 0 1280 426" role="img" aria-label="XDF-1 engineering milestones and independently verified scope">
+<title>XDF-1 engineering milestones and independently verified scope</title>
+<rect width="1280" height="426" fill="#0a1425"/>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#7892aa"/></marker></defs>
+<text x="640" y="46" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="27" font-weight="700">ENGINEERING ROADMAP  |  OBSERVE REAL PROGRESS</text>
+<text x="640" y="78" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="16" font-weight="400">Verified hardware is separate from reference software and planned physical capabilities.</text>
+<rect x="46" y="126" width="255" height="213" rx="16" fill="#10253a" stroke="#4fe1d2" stroke-width="2"/>
+<text x="173" y="168" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="700">M2.1</text>
+<text x="173" y="205" fill="#4fe1d2" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="15" font-weight="700">RTL VERIFIED</text>
+<text x="173" y="247" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="15" font-weight="400">64 streams + 4 lanes</text>
+<text x="173" y="272" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="15" font-weight="400">XDF arithmetic bridge</text>
+<path d="M303 223 L354 223" fill="none" stroke="#7892aa" stroke-width="2.4" marker-end="url(#arr)"/>
+<rect x="357" y="126" width="255" height="213" rx="16" fill="#10253a" stroke="#7cb5ff" stroke-width="2"/>
+<text x="484" y="168" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="700">M2.2A</text>
+<text x="484" y="205" fill="#7cb5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="15" font-weight="700">REFERENCE MODEL</text>
+<text x="484" y="247" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="15" font-weight="400">Data lifetimes + AMEE</text>
+<text x="484" y="272" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="15" font-weight="400">Retention + documentation</text>
+<path d="M614 223 L665 223" fill="none" stroke="#7892aa" stroke-width="2.4" marker-end="url(#arr)"/>
+<rect x="668" y="126" width="255" height="213" rx="16" fill="#10253a" stroke="#e8a6f3" stroke-width="2"/>
+<text x="795" y="168" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="700">M2.2B</text>
+<text x="795" y="205" fill="#e8a6f3" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="15" font-weight="700">TO IMPLEMENT</text>
+<text x="795" y="247" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="15" font-weight="400">Programmable reflex</text>
+<text x="795" y="272" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="15" font-weight="400">Neural adapter + state</text>
+<path d="M925 223 L976 223" fill="none" stroke="#7892aa" stroke-width="2.4" marker-end="url(#arr)"/>
+<rect x="979" y="126" width="255" height="213" rx="16" fill="#10253a" stroke="#ffd18a" stroke-width="2"/>
+<text x="1106" y="168" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="700">M3+</text>
+<text x="1106" y="205" fill="#ffd18a" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="15" font-weight="700">FUTURE HARDWARE</text>
+<text x="1106" y="247" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="15" font-weight="400">DMA + high-speed I/O</text>
+<text x="1106" y="272" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="15" font-weight="400">FPGA + measured watts</text>
+<text x="640" y="386" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="15" font-weight="400">No current evidence of physical 500 MB/s handling, neural acceleration, FPGA Fmax or sensor-to-action power.</text>
+</svg>
