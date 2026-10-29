@@ -67,7 +67,7 @@ module tb_xdf_sensor_pipeline;
 
   initial begin : run
     int sid,seq, sample;
-    logic [1:0] priority,kind;
+    logic [1:0] event_priority,kind;
     logic [95:0] raw;
     bit found;
     int matched_index;
@@ -99,9 +99,9 @@ module tb_xdf_sensor_pipeline;
           sample=((generated[l]*37+l*19)%401)-200;
           if(generated[l]%89==35) sample=2147483647;
           if(generated[l]%89==36) sample=(-2147483647-1);
-          priority=2'((generated[l]+l)%4);
+          event_priority=2'((generated[l]+l)%4);
           kind=(generated[l]%67==0) ? 2'd1 : 2'd0;
-          raw={4'b0,kind,priority,16'(seq),8'(sid),32'(seq*19),32'(sample)};
+          raw={4'b0,kind,event_priority,16'(seq),8'(sid),32'(seq*19),32'(sample)};
           pending[l]=1;
           offered[l]=raw;
           generated[l]++;

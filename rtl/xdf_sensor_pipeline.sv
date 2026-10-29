@@ -119,7 +119,10 @@ module xdf_sensor_pipeline #(
       core_output_token[51:48] == 4'd0 &&
       live[result_slot] && epoch_meta[result_slot] == core_output_token[39:32];
   wire output_space = !decision_valid || decision_ready;
-  assign core_output_ready = output_space && result_tag_matches && !pipeline_error;
+  // Keep output readiness independent of token fields. This avoids a
+  // combinational ready/data loop through top-level result arbitration.
+  // Unexpected results are consumed only to raise a sticky fatal error.
+  assign core_output_ready = output_space && !pipeline_error;
 
   wire signed [32:0] signed_delta = {core_output_token[31],core_output_token[31:0]};
   wire [32:0] abs_delta = signed_delta[32] ?
@@ -147,7 +150,7 @@ module xdf_sensor_pipeline #(
   // Each metadata slot has one elaborated writer, avoiding dynamic-index
   // register writes that can produce bad sv2v/Yosys driver resolution.
   wire begin_fire = core_begin_valid && core_begin_ready;
-  wire complete_fire = core_output_valid && core_output_ready;
+  wire complete_fire = core_output_valid && core_output_ready && result_tag_matches;
   for (genvar slot=0;slot<2;slot++) begin : metadata_slots
     always_ff @(posedge clk or negedge rst_n) begin
       if (!rst_n) begin
@@ -193,7 +196,7 @@ module xdf_sensor_pipeline #(
       endcase
 
       if (decision_valid && decision_ready) decision_valid <= 1'b0;
-      if (core_output_valid && core_output_ready) begin
+      if (core_output_valid && core_output_ready && result_tag_matches) begin
         decision_valid <= 1'b1;
         decision_data <= {critical,core_output_token[31:0],event_meta[result_slot]};
       end
