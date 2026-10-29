@@ -1,10 +1,75 @@
-# XDF-1: Experimental tagged-token dataflow processor (M1.1)
+# XDF-1 — Event-Driven Sensory Computing Research Processor
 
-An original research prototype of a **four-tile 32-bit tagged dataflow execution fabric** plus its host compiler, independent Python reference interpreter, SystemVerilog RTL, and reproducible verification harness. No claim is made that the general dataflow concept is novel or that this processor is fabricated, production-ready, faster or more efficient than conventional CPUs.
+**A research architecture for concurrent perception, stateful sensor fusion, and low-latency decisions.**
 
-## Start here
+XDF-1 explores a question: **can a programmable, tagged-token dataflow fabric receive many independent sensory events, correlate them, maintain relevant state, and produce useful decisions with less coordination overhead than a conventional instruction-driven approach?**
 
-Install Python 3.10+, PyYAML, and pytest. From the repository root:
+The aspiration is not another general-purpose CPU. It is a **sensory computing fabric** where the arrival of data makes the necessary work eligible to execute. Fast, bounded reactions and richer contextual interpretations should be able to coexist without forcing unrelated signals to wait on each other.
+
+![XDF-1 sensory event fabric: sensors, acquisition, processing tiles, state and fusion, decision engine, actions, and feedback](docs/diagrams/sensory-fabric.svg)
+
+> **Project philosophy:** sense concurrently; preserve event meaning and timing; compute when operands are ready; combine evidence over time; make explainable decisions; use feedback to improve the next observation.
+
+## Two complementary execution paths
+
+![Two paths: fast reflex rules for time-sensitive events and contextual fusion for multi-sensor decisions](docs/diagrams/decision-paths.svg)
+
+- **Fast reflex:** bounded dataflow rules and priorities for events with explicit response deadlines. A future safety-critical installation would require *separate, validated fail-safe protections*; XDF-1 is not yet such a safety controller.
+- **Contextual decision:** combine timestamped observations, filtering, historical state, confidence/quality indicators, and programmable rules or future AI models. Report **what** decision was made and **why**.
+
+Not every event must pass through every layer. Sensor rates can be very different: a high-bandwidth camera may require more resources than hundreds of low-rate sensors. We therefore measure **sustained events per second, burst capacity, per-event latency, bounded queue behavior, and energy per meaningful decision**, not sensor count alone.
+
+## Why dataflow?
+
+![Illustrative instruction-driven versus tagged-token dataflow execution](docs/diagrams/execution-model.svg)
+
+XDF-1 currently uses *tagged dataflow execution*: operations become eligible when their input ports have received matching tokens. The reference implementation uses a synchronous clock and a round-robin token router. A conventional CPU can also exploit parallelism; this illustration is a model comparison **not proof of a speed or power advantage**. Dataflow has extensive academic and commercial precedents; novel claims require demonstration against prior art.
+
+## Technical foundation: implemented versus proposed
+
+| Capability | Current status |
+| --- | --- |
+| Four synchronous 32-bit compute tiles | **Implemented and RTL-simulated** |
+| Eight graph nodes per tile; 32 nodes total | **Implemented** |
+| Two concurrent `(context, epoch)` tag slots | **Implemented and tested** |
+| 64-bit token encoding; ready/valid router | **Implemented and tested** |
+| ADD, SUB, XOR, AND, PASS, OUTPUT on acyclic graphs | **Implemented** |
+| Python graph loader, reference model, automated tests | **Implemented** |
+| Generic logic synthesis and machine-readable cell accounting | **Verified in GitHub Actions** |
+| High-efficiency statically decoded operand storage | **Experimental optimization branch; measured and regression tested** |
+| Sensory event ingestion, timestamping, deadlines, state, and fusion | **Phase 2 research/prototype** |
+| Real sensor connectors, FPGA bitstream, operating system | **Not implemented** |
+| Fabricated semiconductor / ASIC performance or power numbers | **Not implemented / not measured** |
+
+### Measured first hardware optimization
+
+Identical generic synthesis flows on GitHub Actions measured **90,085** leaf cells for the M1.1 baseline and **35,555** after replacing dynamic operand-register writes with statically decoded per-node writes: a **60.5% reduction in generic leaf cells** while maintaining 5,183 sequential cells. The optimized branch passed the existing 1,000-case RTL regression. These are **technology-independent Yosys cells**, not FPGA LUTs, ASIC area, measured power, or clock-frequency improvements; results can change with target mapping and synthesis settings.
+
+The original M1.1 synthesis and RTL CI results are available in [`reports/M1_1_SYNTHESIS_GATE.md`](reports/M1_1_SYNTHESIS_GATE.md). Ongoing work is tracked in [`spec/architecture.md`](spec/architecture.md) and [`fpga/README.md`](fpga/README.md).
+
+## Phase 1 — Architecture optimization
+
+1. Measure logic and latency against an unmodified, passing baseline.
+2. Reduce costly operand storage and local scheduling while preserving token semantics.
+3. Compare router buffering, arbitration, fairness and backpressure alternatives.
+4. Parameterize and test smaller/larger compute fabrics with explicit resource limits.
+
+## Phase 2 — Sensory intelligence and control
+
+5. Define a **Sensory Event Fabric (SEF)** that accepts independent streams, timestamps events close to their sources, checks validity, and applies bounded admission control.
+6. Support event priority and deadline metadata, plus **fair scheduling** to prevent background starvation.
+7. Add predicates, comparisons, threshold triggers, and conditional routing for fast reflex logic.
+8. Add explicit state, aggregation windows, deterministic ordering rules and feedback. Extend arithmetic with multiply-accumulate and saturating/fixed-point operations after numerical specification and cross-checking.
+
+**First meaningful multi-sensor milestone:** simulate 64 logical streams with concurrent bursts, event reordering, output backpressure, and stateful fusion; demonstrate explainable decisions while checking event accounting and worst-case latency. Hardware interfaces and board-level measurements follow only when these contracts pass reference tests and RTL simulation.
+
+### Timing and scientific accuracy
+
+Femtosecond (`10^-15 s`) and zeptosecond (`10^-21 s`) interactions are *long-term physical research interests*, **not claims about digital sensor-to-decision latency**. We must measure capture, transport, queuing, computation, and actuation separately. Hardware physical limitations, clock rates, and sensor bandwidth determine practical response times.
+
+## Run the existing M1 processor
+
+Install Python 3.10+, PyYAML and pytest:
 
 ```bash
 python3 -m pip install -e . pytest
@@ -13,9 +78,7 @@ make reference
 make vectors
 ```
 
-Expected reference result for the included graph: `10` for `(7+5) XOR (9-3)`.
-
-To supply your own inputs:
+The bundled graph computes `(A+B) XOR (C-D)` and returns **10** for `A=7, B=5, C=9, D=3`.
 
 ```bash
 xdf1 programs/first_graph.yaml \
@@ -23,51 +86,22 @@ xdf1 programs/first_graph.yaml \
   --context 1 --epoch 7 --emit build/run.json
 ```
 
-The JSON contains configuration writes, packed 64-bit input tokens, and expected results; it is a **simulation host artifact** rather than a driver for an existing FPGA interface.
+For RTL verification, install Verilator and a C++ toolchain and run `make rtl-lint && make rtl-sim`.
+For technology-independent synthesis, install `sv2v` and Yosys and run `make synth`. CI runs these stages separately, publishes synthesis evidence and rejects failures. The `build/` directory contains generated artifacts and is not checked into source control.
 
-## RTL verification (requires external HDL tools)
+## Repository map
 
-Install [Verilator](https://verilator.org/guide/latest/install.html) and a modern C++ compiler, then run:
+- [`rtl/`](rtl/) — SystemVerilog tiles, router, host interface and processor core.
+- [`python/xdf1/`](python/xdf1/) — token definitions, graph validation, independent Python reference, host CLI and research models.
+- [`tests/`](tests/), [`tb/`](tb/) — Python tests and SystemVerilog integration testbench.
+- [`programs/`](programs/) — example computation graph.
+- [`tools/`](tools/) — deterministic vectors, synthesis analysis and documentation utilities.
+- [`spec/`](spec/) — execution contract, limitations and verification plan.
+- [`docs/diagrams/`](docs/diagrams/) — editable, self-contained SVG architecture illustrations.
+- [`fpga/`](fpga/), [`reports/`](reports/) — future FPGA acceptance criteria and measured evidence.
 
-```bash
-make rtl-lint
-make rtl-sim
-```
+## What XDF-1 is not (yet)
 
-The testbench runs directed tests and 1000 deterministic cases generated by the Python reference model. `RTL regression: 1000 randomized cases PASS` and `XDF-1 M1 RTL ALL TESTS PASS` are success strings to expect **only when the simulator actually exits successfully**.
+XDF-1 is **not a CPU replacement, a fabricated chip, a safety-certified controller, a neuromorphic device, or an AI model**. The current hardware has no general memory access, arbitrary loops, untrusted-program isolation or physical sensory I/O. The architectural goal is to *test*, rather than assume, whether this style of computation improves latency, energy efficiency or predictable throughput on useful sensory workloads.
 
-## Generic synthesis and M1.1 verification (requires external HDL tools)
-
-Install [`sv2v`](https://github.com/zachjs/sv2v) and [Yosys](https://github.com/YosysHQ/yosys), then:
-
-```bash
-make synth
-```
-
-A successful run produces `build/synthesis.log`, `build/yosys.json`, `build/synthesis-status.txt`, and `build/synthesis-summary.json`. This is technology-independent synthesis, NOT FPGA timing analysis or ASIC foundry signoff. `make synth` explicitly exits nonzero if the tools are missing. CI runs a separate synthesis job and uploads the synthesis log and machine-readable generic cell counts. This is not a mapped FPGA report or ASIC physical signoff.
-
-## Directory overview
-
-- `spec/` — frozen ISA-like token and graph execution contract, verification plan.
-- `rtl/` — synthesizable-design-intended SystemVerilog files (`xdf_pkg.sv`, `xdf_tile.sv`, `xdf_router.sv`, `xdf_top.sv`).
-- `python/xdf1/` — graph validation, token encoding, reference execution, host CLI.
-- `programs/` — example four-node computation graph.
-- `tests/` — pytest model and validation tests.
-- `tb/` — SystemVerilog testbench and deterministic reference vectors.
-- `tools/` — reproducible vector generator and synthesis script.
-- `reports/` — evidence and gaps; never claim a passing RTL test without running it.
-
-## M1 deliberate limitations
-
-No loops, no arbitrary memory loads/stores, no external I/O peripherals, no hardware debugger, no executable C compiler, no async gates, no chip pinout. Programmable graph nodes allow bounded DAG execution. Invalid graph configurations must be rejected by the *trusted* host graph compiler; hardware rejects only elementary invalid fields. A full reset is needed to load a different graph program and to recover from a permanently incomplete execution tag.
-
-## Next milestones
-
-- M1: Python reference and RTL simulations have passed on GitHub Actions.
-- M1.1: **verified 29 Oct 2026** - 23 Python tests and 1000 RTL regression cases pass; generic Yosys synthesis reports 90,085 leaf cells (5,183 sequential). See `reports/M1_1_SYNTHESIS_GATE.md`.
-- M2: parameterize tile/node counts, strengthen assertions/formal properties, add cancellation and per-tag lifetime monitoring.
-- M3: add stateful/loop constructs and compare behavior against baseline RISC-V and another dataflow implementation.
-- M4: FPGA mapping, clock constraint and measured board-level behavior.
-- M5: select open PDK, implement ASIC memory and I/O, complete physical signoff before MPW.
-
-See `spec/architecture.md` for the detailed hardware/software execution contract and `fpga/README.md` for platform-specific readiness requirements.
+The project's source is available under the [MIT License](LICENSE). Contributions and reproducible comparative benchmarks are welcome.
