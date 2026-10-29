@@ -82,7 +82,7 @@ make sensory-sim
 make sensory-synth
 ```
 
-## Integrated sensor-to-dataflow research (M2.1 candidate)
+## Integrated sensor-to-dataflow hardware (M2.1 verified)
 
 ![Verified-components integration plan: four input lanes, the 64-sensor event fabric, the four-tile tagged-dataflow processor, and contextual decision output](docs/diagrams/integrated-pipeline.svg)
 
@@ -94,7 +94,7 @@ The next experimental hardware wrapper links **the previously independent SEF an
 - Input faults are kept separate from internal compute faults.
 - The graph is intentionally fixed for this integration gate; **arbitrary programs, physical I/O, clocks and timing, and real actuator control are not yet implemented.**
 
-See [the interface contract](spec/integrated-sensor-pipeline.md) and run `make pipeline-lint`, `make pipeline-sim`, and `make pipeline-synth` with the required external HDL tools. Completion status is determined by CI, **not by this diagram**.
+See [the interface contract](spec/integrated-sensor-pipeline.md) and run `make pipeline-lint`, `make pipeline-sim`, and `make pipeline-synth` with the required external HDL tools. **All six GitHub CI gates passed**: 45 Python tests, the existing RTL regressions, and the integrated 840-event / 824-decision / 16-rejection test with two in-flight contexts. Technology-independent synthesis reports **73,019 generic cells / 17,184 sequential**. These are simulated and synthesized results only, not FPGA timing or physical sensor measurements. See [the M2.1 engineering report](reports/M2_1_INTEGRATION_GATE.md).
 
 ## Phase 1 — Architecture optimization
 
