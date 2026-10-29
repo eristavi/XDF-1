@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 312" role="img" aria-labelledby="title desc">
+  <title id="title">XDF-1 M2.1 verified sensor-to-dataflow pipeline</title>
+  <desc id="desc">Four simultaneous sensor input lanes feed the 64-sensor event fabric, which uses tagged context allocation and two operand tokens to execute subtraction on the four-tile XDF processor. A decision combines sensor alarms and the computed delta. Ready-valid backpressure travels in the reverse direction.</desc>
+  <defs>
+    <style>
+      .bg{fill:#0b1323}.node{fill:#15243b;stroke:#527ab1;stroke-width:1.5}.sense{fill:#112c3a;stroke:#39afba;stroke-width:1.5}.compute{fill:#1c2344;stroke:#788be8;stroke-width:1.5}.text{font-family:Arial,sans-serif;fill:#edf5ff;font-size:16px}.label{font-family:Arial,sans-serif;fill:#b7cbe0;font-size:13px}.heading{font-family:Arial,sans-serif;fill:#fff;font-size:22px;font-weight:700}.line{stroke:#b5c7de;stroke-width:2.4;fill:none;marker-end:url(#arrow)}.back{stroke:#49d7a9;stroke-width:1.6;stroke-dasharray:6 5;fill:none;marker-end:url(#backArrow)}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#b5c7de"/></marker>
+    <marker id="backArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#49d7a9"/></marker>
+  </defs>
+  <rect width="1040" height="312" rx="22" class="bg"/>
+  <text x="28" y="43" class="heading">M2.1 | Sensor events drive real XDF computation</text>
+  <text x="28" y="66" class="label">Fixed experimental SUB → OUTPUT graph · two concurrent tags · preserved sensor metadata</text>
+  <rect x="28" y="103" width="169" height="110" rx="13" class="node"/>
+  <text x="112" y="137" text-anchor="middle" class="text">Sensor inputs</text>
+  <text x="112" y="158" text-anchor="middle" class="label">4 independent lanes</text>
+  <text x="112" y="179" text-anchor="middle" class="label">96-bit events</text>
+  <path d="M197 158 H246" class="line"/>
+  <rect x="246" y="103" width="205" height="110" rx="13" class="sense"/>
+  <text x="348" y="136" text-anchor="middle" class="text">Sensory Event Fabric</text>
+  <text x="348" y="160" text-anchor="middle" class="label">64 states · EMA · alarms</text>
+  <text x="348" y="181" text-anchor="middle" class="label">priority · admission control</text>
+  <path d="M451 158 H506" class="line"/>
+  <rect x="506" y="103" width="214" height="110" rx="13" class="compute"/>
+  <text x="613" y="135" text-anchor="middle" class="text">XDF compute tiles</text>
+  <text x="613" y="158" text-anchor="middle" class="label">2 tagged executions</text>
+  <text x="613" y="181" text-anchor="middle" class="label">SUB(raw, EMA)</text>
+  <path d="M720 158 H770" class="line"/>
+  <rect x="770" y="103" width="242" height="110" rx="13" class="sense"/>
+  <text x="891" y="134" text-anchor="middle" class="text">Contextual decision</text>
+  <text x="891" y="158" text-anchor="middle" class="label">sensor/group alarms</text>
+  <text x="891" y="180" text-anchor="middle" class="label">or delta above threshold</text>
+  <path d="M893 222 V258 H112 V222" class="back"/>
+  <text x="505" y="248" text-anchor="middle" class="label">Ready/valid backpressure — no silent drops when consumer stalls</text>
+  <text x="505" y="290" text-anchor="middle" class="label">Synchronous RTL research prototype · NOT an FPGA timing, power or safety-certified claim</text>
+</svg>

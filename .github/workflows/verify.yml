@@ -109,3 +109,53 @@ jobs:
             build/sensory-synthesis-summary.json
             build/sensory-synthesis-status.txt
           if-no-files-found: warn
+
+  integrated-pipeline-rtl:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install Python reference and tests
+        run: python -m pip install -e . pytest
+      - name: Verify pipeline arithmetic and existing contracts
+        run: make python-test
+      - name: Install Verilator
+        run: sudo apt-get update && sudo apt-get install -y verilator
+      - name: Lint integrated RTL
+        run: make pipeline-lint
+      - name: Simulate concurrent sensor to XDF decision pipeline
+        run: make pipeline-sim
+
+  integrated-pipeline-synthesis:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install synthesis prerequisites
+        run: |
+          sudo apt-get update && sudo apt-get install -y yosys unzip
+          curl --fail --location --silent --show-error --retry 3 \
+            https://github.com/zachjs/sv2v/releases/download/v0.0.13/sv2v-Linux.zip \
+            --output /tmp/sv2v-Linux.zip
+          unzip -q /tmp/sv2v-Linux.zip -d /tmp/sv2v-pipeline
+          binary=$(find /tmp/sv2v-pipeline -type f -name sv2v -print -quit)
+          test -n "$binary"
+          sudo install -m 0755 "$binary" /usr/local/bin/sv2v
+      - name: Technology-independent synthesis of integrated pipeline
+        run: make pipeline-synth
+      - name: Archive integrated synthesis evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integrated-pipeline-synthesis-evidence
+          path: |
+            build/pipeline-synthesis.log
+            build/pipeline-synthesis-summary.json
+            build/pipeline-synthesis-status.txt
+          if-no-files-found: warn

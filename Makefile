@@ -2,7 +2,7 @@ SHELL := /bin/bash
 PYTHON ?= python3
 RTL = rtl/xdf_pkg.sv rtl/xdf_tile.sv rtl/xdf_router.sv rtl/xdf_top.sv
 
-.PHONY: help python-test vectors reference rtl-sim rtl-lint synth sensory-vectors sensory-lint sensory-sim sensory-synth clean
+.PHONY: help python-test vectors reference rtl-sim rtl-lint synth sensory-vectors sensory-lint sensory-sim sensory-synth clean pipeline-lint pipeline-sim pipeline-synth
 help:
 	@echo "XDF-1 targets: python-test vectors reference rtl-lint rtl-sim synth sensory-vectors sensory-lint sensory-sim sensory-synth clean"
 
@@ -47,5 +47,22 @@ synth:
 sensory-synth:
 	bash tools/synth_sensory.sh
 
+# Whole-system M2.1 sensor -> tagged graph -> contextual decision.
+PIPELINE_RTL = $(RTL) rtl/xdf_sensory.sv rtl/xdf_sensor_pipeline.sv
+
+pipeline-lint:
+	@command -v verilator >/dev/null || { echo "ERROR: Verilator is missing"; exit 2; }
+	verilator --lint-only --timing -Wno-fatal --top-module xdf_sensor_pipeline $(PIPELINE_RTL)
+
+pipeline-sim:
+	@command -v verilator >/dev/null || { echo "ERROR: Verilator is missing"; exit 2; }
+	@mkdir -p build/pipeline_obj_dir
+	verilator --binary --timing -j 2 -Wno-fatal --top-module tb_xdf_sensor_pipeline \
+	  --Mdir build/pipeline_obj_dir $(PIPELINE_RTL) tb/tb_xdf_sensor_pipeline.sv
+	build/pipeline_obj_dir/Vtb_xdf_sensor_pipeline
+
+pipeline-synth:
+	bash tools/synth_pipeline.sh
+
 clean:
-	rm -rf build/obj_dir build/sensory_obj_dir build/xdf1_synth.v build/synthesis.log build/yosys.json build/xdf_sensory_synth.v build/sensory-synthesis.log build/sensory-yosys.json build/sensory-synthesis-summary.json build/sensory-synthesis-status.txt
+	rm -rf build/pipeline_obj_dir build/pipeline-synth.v build/pipeline-synthesis.log build/pipeline-yosys.json build/pipeline-synthesis-summary.json build/pipeline-synthesis-status.txt build/obj_dir build/sensory_obj_dir build/xdf1_synth.v build/synthesis.log build/yosys.json build/xdf_sensory_synth.v build/sensory-synthesis.log build/sensory-yosys.json build/sensory-synthesis-summary.json build/sensory-synthesis-status.txt

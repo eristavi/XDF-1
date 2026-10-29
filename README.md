@@ -82,6 +82,20 @@ make sensory-sim
 make sensory-synth
 ```
 
+## Integrated sensor-to-dataflow hardware (M2.1 verified)
+
+![Verified-components integration plan: four input lanes, the 64-sensor event fabric, the four-tile tagged-dataflow processor, and contextual decision output](docs/diagrams/integrated-pipeline.svg)
+
+The next experimental hardware wrapper links **the previously independent SEF and XDF graph engine**. A validated sensor sample and its exponential moving average are packed into two tagged operands; XDF executes a fixed `SUB(raw, EMA) → OUTPUT` graph using up to **two concurrent contexts**. The final stream preserves the 164-bit sensory observation, the computed 32-bit delta, and an explainable threshold decision.
+
+- Four sensor ingress lanes and 64 logical sensor IDs (one SEF decision per clock at most).
+- In-flight tag/epoch matching prevents cross-event metadata mix-ups.
+- The downstream consumer can stall without silently dropping an accepted observation.
+- Input faults are kept separate from internal compute faults.
+- The graph is intentionally fixed for this integration gate; **arbitrary programs, physical I/O, clocks and timing, and real actuator control are not yet implemented.**
+
+See [the interface contract](spec/integrated-sensor-pipeline.md) and run `make pipeline-lint`, `make pipeline-sim`, and `make pipeline-synth` with the required external HDL tools. **All six GitHub CI gates passed**: 45 Python tests, the existing RTL regressions, and the integrated 840-event / 824-decision / 16-rejection test with two in-flight contexts. Technology-independent synthesis reports **73,019 generic cells / 17,184 sequential**. These are simulated and synthesized results only, not FPGA timing or physical sensor measurements. See [the M2.1 engineering report](reports/M2_1_INTEGRATION_GATE.md).
+
 ## Phase 1 — Architecture optimization
 
 1. Measure logic and latency against an unmodified, passing baseline.
