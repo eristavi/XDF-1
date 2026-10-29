@@ -166,8 +166,33 @@ module xdf_sensory #(
   wire [15:0] incoming_seq = pop_data[87:72];
   wire [31:0] incoming_time = pop_data[63:32];
   wire signed [31:0] incoming_value = pop_data[31:0];
-  wire [15:0] seq_delta = incoming_seq - last_seq[sensor_index];
-  wire [31:0] time_delta = incoming_time - last_time[sensor_index];
+  // One-hot decoded read selection is an experimental area optimization.
+  // It factors the sensor-ID comparison across all six state arrays instead
+  // of independently synthesizing dynamic 64:1 indexed read multiplexers.
+  logic selected_seen;
+  logic [15:0] selected_seq;
+  logic [31:0] selected_time;
+  logic signed [31:0] selected_last_value;
+  logic signed [31:0] selected_estimate;
+  logic signed [31:0] selected_threshold;
+  always_comb begin
+    selected_seen=1'b0;
+    selected_seq='0;
+    selected_time='0;
+    selected_last_value='0;
+    selected_estimate='0;
+    selected_threshold='0;
+    for (int s=0;s<N_SENSORS;s++) begin
+      selected_seen |= seen[s] & (sensor_index==SENSOR_BITS'(s));
+      selected_seq |= last_seq[s] & {16{sensor_index==SENSOR_BITS'(s)}};
+      selected_time |= last_time[s] & {32{sensor_index==SENSOR_BITS'(s)}};
+      selected_last_value |= last_value[s] & {32{sensor_index==SENSOR_BITS'(s)}};
+      selected_estimate |= estimate[s] & {32{sensor_index==SENSOR_BITS'(s)}};
+      selected_threshold |= sensor_threshold[s] & {32{sensor_index==SENSOR_BITS'(s)}};
+    end
+  end
+  wire [15:0] seq_delta = incoming_seq - selected_seq;
+  wire [31:0] time_delta = incoming_time - selected_time;
   logic [7:0] detected_fault;
   logic accepted_event;
 
@@ -176,24 +201,24 @@ module xdf_sensory #(
     if(int'(sensor_id) >= N_SENSORS) detected_fault = FAULT_BAD_SENSOR;
     else if(pop_data[91:90]!=2'b00) detected_fault = FAULT_BAD_KIND;
     else if(pop_data[95:92]!=4'b0000) detected_fault = FAULT_RESERVED;
-    else if(seen[sensor_index] && (seq_delta==16'h0 || seq_delta[15]))
+    else if(selected_seen && (seq_delta==16'h0 || seq_delta[15]))
       detected_fault = FAULT_SEQUENCE;
-    else if(seen[sensor_index] && time_delta!=32'h0 && time_delta[31])
+    else if(selected_seen && time_delta!=32'h0 && time_delta[31])
       detected_fault = FAULT_TIMESTAMP;
   end
   assign accepted_event = pop_valid && detected_fault == 8'b0;
 
-  wire signed [31:0] previous_value = seen[sensor_index] ? last_value[sensor_index] : 32'sd0;
-  wire signed [32:0] previous_est_ext = {estimate[sensor_index][31],estimate[sensor_index]};
+  wire signed [31:0] previous_value = selected_seen ? selected_last_value : 32'sd0;
+  wire signed [32:0] previous_est_ext = {selected_estimate[31],selected_estimate};
   wire signed [32:0] sample_ext = {incoming_value[31],incoming_value};
   wire signed [32:0] difference = sample_ext - previous_est_ext;
   wire signed [32:0] estimate_ext = previous_est_ext + (difference >>> 2);
-  wire signed [31:0] new_estimate = seen[sensor_index] ? estimate_ext[31:0] : incoming_value;
+  wire signed [31:0] new_estimate = selected_seen ? estimate_ext[31:0] : incoming_value;
   wire signed [33:0] old_group = group_sum[group_index];
   wire signed [33:0] new_group = old_group +
      {{2{incoming_value[31]}},incoming_value} -
      {{2{previous_value[31]}},previous_value};
-  wire sensor_alarm = incoming_value >= sensor_threshold[sensor_index];
+  wire sensor_alarm = incoming_value >= selected_threshold;
   wire group_alarm = new_group >= group_threshold[group_index];
 
   // Updating only one sensor and one group per cycle provides deterministic
