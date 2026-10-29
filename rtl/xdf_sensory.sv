@@ -173,7 +173,7 @@ module xdf_sensory #(
 
   always_comb begin
     detected_fault = 8'b0;
-    if(sensor_id >= N_SENSORS) detected_fault = FAULT_BAD_SENSOR;
+    if(int'(sensor_id) >= N_SENSORS) detected_fault = FAULT_BAD_SENSOR;
     else if(pop_data[91:90]!=2'b00) detected_fault = FAULT_BAD_KIND;
     else if(pop_data[95:92]!=4'b0000) detected_fault = FAULT_RESERVED;
     else if(seen[sensor_index] && (seq_delta==16'h0 || seq_delta[15]))
@@ -247,8 +247,8 @@ module xdf_sensory #(
 
   logic bad_config;
   always_comb begin
-    bad_config = cfg_group ? (cfg_index >= GROUPS) :
-                 (cfg_index >= N_SENSORS ||
+    bad_config = cfg_group ? (int'(cfg_index) >= GROUPS) :
+                 (int'(cfg_index) >= N_SENSORS ||
                   cfg_threshold[33:32]!={2{cfg_threshold[31]}});
   end
 

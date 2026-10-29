@@ -5,6 +5,7 @@ The resulting file is generated during CI and never used as a source artifact.
 """
 from __future__ import annotations
 import random
+from collections import defaultdict, deque
 from pathlib import Path
 from xdf1.sensory import SensorDecision, SensorEvent, SensoryFabric
 
@@ -30,6 +31,8 @@ def generate() -> tuple[str, dict[str, int]]:
     next_sequence = [0] * 64
     pending: list[SensorEvent | None] = [None] * 4
     rows: list[str] = []
+    accepted_cycles = defaultdict(deque)
+    latencies = []
 
     def one_cycle(allow_new: bool, cycle: int) -> None:
         if allow_new:
@@ -52,6 +55,11 @@ def generate() -> tuple[str, dict[str, int]]:
         ready_result = not ((cycle % 113) in range(44, 55) or rng.random() < .18)
         observed_output = model.out
         response = model.tick(pending, result_ready=ready_result)
+        if response.delivered is not None:
+            code = response.delivered.event.encode()
+            if not accepted_cycles[code]:
+                raise AssertionError('decision without accepted event')
+            latencies.append(cycle - accepted_cycles[code].popleft())
         vin = sum((1 << i) for i in range(4) if pending[i] is not None)
         packed = [(x.encode() if x else 0) for x in pending]
         ready_mask = sum(1 << i for i, b in enumerate(response.ready) if b)
@@ -61,6 +69,7 @@ def generate() -> tuple[str, dict[str, int]]:
                     f' {int(ready_result):x} {ready_mask:x} {int(result_valid):x} {output:041x}')
         for i in range(4):
             if pending[i] is not None and response.ready[i]:
+                accepted_cycles[pending[i].encode()].append(cycle)
                 pending[i] = None
 
     for cycle in range(OFFER_CYCLES):
@@ -78,6 +87,11 @@ def generate() -> tuple[str, dict[str, int]]:
     # Fixture has to exercise all important behaviors, not merely produce valid data.
     assert model.accepted > 1000 and model.processed > 700, counts
     assert model.faults > 0 and model.alarms > 0, counts
+    assert len(latencies) == model.processed
+    ordered = sorted(latencies)
+    counts.update(latency_avg_cycles=round(sum(latencies)/len(latencies),2),
+                  latency_p99_cycles=ordered[(99*len(ordered)-1)//100],
+                  latency_max_cycles=max(latencies))
     return '\n'.join([f'{counts["cycles"]} {counts["accepted"]} {counts["processed"]} {counts["faults"]}',
                       *rows, '']), counts
 

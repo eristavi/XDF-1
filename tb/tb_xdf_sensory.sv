@@ -92,7 +92,7 @@ module tb_xdf_sensory;
     // output and threshold configuration. Then check simple post-reset event.
     @(negedge clk); rst_n=0;
     #1;
-    if(result_valid || accepted_count || processed_count || fault_count)
+    if(result_valid || accepted_count!=32'd0 || processed_count!=32'd0 || fault_count!=32'd0)
       $fatal(1,"Asynchronous sensory reset did not clear state");
     repeat(3) @(posedge clk);
     @(negedge clk); rst_n=1;

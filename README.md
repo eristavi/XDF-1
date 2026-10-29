@@ -36,8 +36,10 @@ XDF-1 currently uses *tagged dataflow execution*: operations become eligible whe
 | ADD, SUB, XOR, AND, PASS, OUTPUT on acyclic graphs | **Implemented** |
 | Python graph loader, reference model, automated tests | **Implemented** |
 | Generic logic synthesis and machine-readable cell accounting | **Verified in GitHub Actions** |
-| High-efficiency statically decoded operand storage | **Experimental optimization branch; measured and regression tested** |
-| Sensory event ingestion, timestamping, deadlines, state, and fusion | **Phase 2 research/prototype** |
+| High-efficiency statically decoded operand storage | **Verified: 60.5% fewer generic cells for the four-tile core** |
+| 4-lane/64-stream standalone sensory event ingress, priorities, state and fusion | **Python + RTL simulated; generic synthesis verified** |
+| Source timestamps (carried, not synchronized), per-sensor sequence validation | **Implemented in sensory module** |
+| Real deadline scheduling, integration with DAG compute tiles | **Not implemented** |
 | Real sensor connectors, FPGA bitstream, operating system | **Not implemented** |
 | Fabricated semiconductor / ASIC performance or power numbers | **Not implemented / not measured** |
 
@@ -46,6 +48,38 @@ XDF-1 currently uses *tagged dataflow execution*: operations become eligible whe
 Identical generic synthesis flows on GitHub Actions measured **90,085** leaf cells for the M1.1 baseline and **35,555** after replacing dynamic operand-register writes with statically decoded per-node writes: a **60.5% reduction in generic leaf cells** while maintaining 5,183 sequential cells. The optimized branch passed the existing 1,000-case RTL regression. These are **technology-independent Yosys cells**, not FPGA LUTs, ASIC area, measured power, or clock-frequency improvements; results can change with target mapping and synthesis settings.
 
 The original M1.1 synthesis and RTL CI results are available in [`reports/M1_1_SYNTHESIS_GATE.md`](reports/M1_1_SYNTHESIS_GATE.md). Ongoing work is tracked in [`spec/architecture.md`](spec/architecture.md) and [`fpga/README.md`](fpga/README.md).
+
+## First verified sensory prototype (standalone SEF)
+
+The first **hardware-simulated Sensory Event Fabric** now ingests four physical
+ready/valid lanes concurrently and distinguishes **64 logical sensor IDs**.
+Its single-issue decision engine performs signed fixed-point smoothing,
+latest-value four-sensor group fusion, per-sensor/group threshold decisions,
+priority-aware arbitration with bounded low-priority service, and explicit
+fault reporting for invalid or stale observations. It is **not connected to the
+four-tile DAG processor yet**.
+
+A deterministic Python-generated reference workload exercised **2,514
+simulation cycles**, **1,887 accepted events**, **1,695 correct decisions**,
+**192 rejected events**, and **625 cycles of held output under backpressure**.
+Modelled accept-to-result latency under *this specific workload* averaged
+**10.9 cycles**, with **44-cycle p99** and **57-cycle maximum**. These are
+simulation cycles, **not physical nanoseconds** or guaranteed worst-case latency.
+
+Generic Yosys synthesis (not FPGA device mapping) reports **36,345 leaf cells,
+11,436 sequential** for the standalone 64-stream sensory block. Synthesis
+includes strict checks for conflicting drivers and implausible state elimination.
+See [`reports/M2_SEF_GATES.md`](reports/M2_SEF_GATES.md) and
+[`spec/sensory-event-protocol.md`](spec/sensory-event-protocol.md).
+
+```bash
+# Verilator and a C++ toolchain required
+make sensory-lint
+make sensory-sim
+
+# sv2v and Yosys required
+make sensory-synth
+```
 
 ## Phase 1 — Architecture optimization
 
@@ -96,7 +130,7 @@ For technology-independent synthesis, install `sv2v` and Yosys and run `make syn
 - [`tests/`](tests/), [`tb/`](tb/) — Python tests and SystemVerilog integration testbench.
 - [`programs/`](programs/) — example computation graph.
 - [`tools/`](tools/) — deterministic vectors, synthesis analysis and documentation utilities.
-- [`spec/`](spec/) — execution contract, limitations and verification plan.
+- [`spec/`](spec/) — execution contract, sensory event format, limitations and verification plan.
 - [`docs/diagrams/`](docs/diagrams/) — editable, self-contained SVG architecture illustrations.
 - [`fpga/`](fpga/), [`reports/`](reports/) — future FPGA acceptance criteria and measured evidence.
 
