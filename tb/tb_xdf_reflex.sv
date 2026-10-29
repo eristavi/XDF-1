@@ -140,8 +140,8 @@ module tb_xdf_reflex;
     @(negedge clk);
     rst_n=0;
     #1;
-    if(reflex_valid || context_valid || accepted_count ||
-       context_drop_count || protected_context_drop_count)
+    if(reflex_valid || context_valid || accepted_count!=32'd0 ||
+       context_drop_count!=32'd0 || protected_context_drop_count!=32'd0)
       $fatal(1,"Reset did not clear state");
     repeat(2) @(posedge clk);
     @(negedge clk);

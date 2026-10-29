@@ -178,6 +178,8 @@ jobs:
         run: make reflex-lint
       - name: Exact 3200-cycle reflex reference crosscheck
         run: make reflex-sim
+      - name: Verify lossless contextual backpressure
+        run: make reflex-lossless-sim
       - name: Lint full SEF-to-reflex frontend
         run: make frontend-lint
       - name: Simulate full SEF-to-reflex frontend
