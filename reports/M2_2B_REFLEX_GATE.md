@@ -1,6 +1,6 @@
 # M2.2B Programmable Reflex & Neural-Metadata Gate
 
-**Status: in verification.** Do not treat this file as proof of passing hardware tests until GitHub Actions completes on the exact committed SHA.
+**Status:** the first two-hardware-gate verification run passed (GitHub Actions run `40951350805`, SHA `e82f3da17af3c7c8e1265b9994338610b71337eb`); subsequent lossless directed test and final release-branch CI are independently required before merge.
 
 ## Implementation
 
@@ -16,6 +16,15 @@ New independent synthesis modules `rtl/xdf_reflex.sv` and `rtl/xdf_perception_fr
 ## Reference verification
 
 Locally: `PYTHONPATH=python python3 -m pytest -q tests/test_reflex.py` and `PYTHONPATH=python python3 tools/generate_reflex_vectors.py`.
+
+## Measurements from initial successful GitHub CI
+
+- **79 Python tests passed**, including 11 new standalone rule/overflow/reset tests.
+- **3,201 cycle-exact oracle comparisons passed:** 2,334 accepted observations, 277 filtered, 415 forwarded to reflex, 508 admitted to neural context, 1,549 context records discarded explicitly, and 172 of those associated with protected alarm events. This fixture deliberately keeps the context sink congested; these losses are **not acceptable evidence retention** for a future production system.
+- System-level directed test: eight SEF ingress observations; seven valid alarms forwarded to reflex, one invalid-kind fault, one context record held, six protected context copies explicitly discarded.
+- Standalone rule classifier Yosys: **4,806 generic cells, 897 sequential cells**.
+- Combined 64-sensor + classifier Yosys: **41,158 generic cells, 12,333 sequential cells**, three reachable module types. Structural register retention and no conflicting drivers verified.
+- No FPGA device mapping, real input-rate benchmark, trained network or persistent protected journal; no physical latency figures.
 
 ## CI acceptance requirements
 
