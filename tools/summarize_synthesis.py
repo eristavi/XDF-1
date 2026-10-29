@@ -43,10 +43,10 @@ def summarize(netlist: dict, top: str = "xdf_top") -> dict:
 
 
 def main() -> None:
-    if len(sys.argv) != 3:
-        raise SystemExit("Usage: summarize_synthesis.py NETLIST.json SUMMARY.json")
+    if len(sys.argv) not in (3, 4):
+        raise SystemExit("Usage: summarize_synthesis.py NETLIST.json SUMMARY.json [TOP]")
     netlist = json.loads(Path(sys.argv[1]).read_text())
-    report = summarize(netlist)
+    report = summarize(netlist, top=sys.argv[3] if len(sys.argv) == 4 else "xdf_top")
     Path(sys.argv[2]).write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
     print(f"Yosys generic synthesis: {report['generic_cell_instances']} leaf cells; "
           f"{report['generic_sequential_cell_instances']} sequential; "

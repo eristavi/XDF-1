@@ -59,3 +59,53 @@ jobs:
             build/synthesis-status.txt
             build/synthesis-summary.json
           if-no-files-found: warn
+
+  sensory-reference-and-rtl:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install Python reference
+        run: python -m pip install -e . pytest
+      - name: Validate sensory reference and threshold decisions
+        run: make python-test
+      - name: Install Verilator
+        run: sudo apt-get update && sudo apt-get install -y verilator
+      - name: Check sensory RTL
+        run: make sensory-lint
+      - name: Cross-check sensory RTL against Python reference
+        run: make sensory-sim
+
+  sensory-generic-synthesis:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install Yosys, sv2v and Python packages
+        run: |
+          sudo apt-get update && sudo apt-get install -y yosys unzip
+          curl --fail --location --silent --show-error --retry 3 \
+            https://github.com/zachjs/sv2v/releases/download/v0.0.13/sv2v-Linux.zip \
+            --output /tmp/sv2v-Linux.zip
+          unzip -q /tmp/sv2v-Linux.zip -d /tmp/sv2v-sensory
+          binary=$(find /tmp/sv2v-sensory -type f -name sv2v -print -quit)
+          test -n "$binary"
+          sudo install -m 0755 "$binary" /usr/local/bin/sv2v
+      - name: Synthesize 64-sensor event fabric
+        run: make sensory-synth
+      - name: Store sensory synthesis evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sensory-synthesis-evidence
+          path: |
+            build/sensory-synthesis.log
+            build/sensory-synthesis-summary.json
+            build/sensory-synthesis-status.txt
+          if-no-files-found: warn
