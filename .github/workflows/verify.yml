@@ -159,3 +159,63 @@ jobs:
             build/pipeline-synthesis-summary.json
             build/pipeline-synthesis-status.txt
           if-no-files-found: warn
+
+  reflex-reference-and-rtl:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install Python reference and tests
+        run: python -m pip install -e . pytest
+      - name: Check programmable reflex model
+        run: make python-test
+      - name: Install Verilator
+        run: sudo apt-get update && sudo apt-get install -y verilator
+      - name: Lint programmable reflex
+        run: make reflex-lint
+      - name: Exact 3200-cycle reflex reference crosscheck
+        run: make reflex-sim
+      - name: Lint full SEF-to-reflex frontend
+        run: make frontend-lint
+      - name: Simulate full SEF-to-reflex frontend
+        run: make frontend-sim
+
+  reflex-generic-synthesis:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install Yosys and sv2v v0.0.13
+        run: |
+          set -euo pipefail
+          sudo apt-get update && sudo apt-get install -y yosys unzip
+          curl --fail --location --silent --show-error --retry 3 \
+            https://github.com/zachjs/sv2v/releases/download/v0.0.13/sv2v-Linux.zip \
+            --output /tmp/sv2v-Linux.zip
+          unzip -q /tmp/sv2v-Linux.zip -d /tmp/sv2v-reflex
+          binary=$(find /tmp/sv2v-reflex -type f -name sv2v -print -quit)
+          test -n "$binary"
+          sudo install -m 0755 "$binary" /usr/local/bin/sv2v
+      - name: Synthesize standalone rule classifier
+        run: make reflex-synth
+      - name: Synthesize combined sensor/reflex frontend
+        run: make frontend-synth
+      - name: Preserve M2.2B synthesis evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflex-and-frontend-synthesis-evidence
+          path: |
+            build/reflex-synthesis.log
+            build/reflex-synthesis-summary.json
+            build/reflex-synthesis-status.txt
+            build/frontend-synthesis.log
+            build/frontend-synthesis-summary.json
+            build/frontend-synthesis-status.txt
+          if-no-files-found: warn
