@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="485" viewBox="0 0 1200 485" role="img" aria-label="XDF-1 programmable reflex and neural-metadata separation">
+<title>XDF-1 M2.2B — independent programmable reflex and neural metadata paths</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#93a9be"/></marker></defs>
+<rect width="1200" height="485" fill="#0b1220"/>
+<text x="600" y="45" font-family="Arial,sans-serif" text-anchor="middle" font-size="28" font-weight="bold" fill="#e9f1fa">M2.2B / PROGRAMMABLE SENSORY REFLEX</text>
+<text x="600" y="75" font-family="Arial,sans-serif" text-anchor="middle" font-size="16" fill="#96aabe">Verified SEF observations → ordered rule table → independently buffered outputs</text>
+<rect x="38" y="137" width="255" height="130" rx="15" fill="#111e30" stroke="#5da4ff" stroke-width="2"/>
+<text x="165" y="177" font-family="Arial,sans-serif" text-anchor="middle" font-size="20" font-weight="bold" fill="#e9f1fa">SEF (existing)</text>
+<text x="165" y="207" font-family="Arial,sans-serif" text-anchor="middle" font-size="14" fill="#96aabe">96-bit sensor event ingress</text>
+<text x="165" y="231" font-family="Arial,sans-serif" text-anchor="middle" font-size="14" fill="#96aabe">Validated 164-bit observation</text>
+<path d="M293 202 H347" fill="none" stroke="#93a9be" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="350" y="120" width="294" height="165" rx="15" fill="#111e30" stroke="#2dd4bf" stroke-width="2"/>
+<text x="497" y="161" font-family="Arial,sans-serif" text-anchor="middle" font-size="20" font-weight="bold" fill="#e9f1fa">RULE CLASSIFIER</text>
+<text x="497" y="192" font-family="Arial,sans-serif" text-anchor="middle" font-size="14" fill="#96aabe">Sensor • Signed threshold</text>
+<text x="497" y="216" font-family="Arial,sans-serif" text-anchor="middle" font-size="14" fill="#96aabe">33-bit absolute delta • Group</text>
+<text x="497" y="243" font-family="Arial,sans-serif" text-anchor="middle" font-size="14" fill="#2dd4bf">Protected alarms override DROP</text>
+<path d="M644 160 H716 V140 H746" fill="none" stroke="#ffcc78" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M644 247 H716 V313 H746" fill="none" stroke="#c4a1ff" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="751" y="94" width="400" height="103" rx="15" fill="#111e30" stroke="#ffcc78" stroke-width="2"/>
+<text x="951" y="132" font-family="Arial,sans-serif" text-anchor="middle" font-size="21" font-weight="bold" fill="#ffcc78">FAST REFLEX</text>
+<text x="951" y="159" font-family="Arial,sans-serif" text-anchor="middle" font-size="14" fill="#e9f1fa">Lossless registered ready/valid output</text>
+<text x="951" y="179" font-family="Arial,sans-serif" text-anchor="middle" font-size="13" fill="#96aabe">Never waits for neural context in best-effort mode</text>
+<rect x="751" y="270" width="400" height="113" rx="15" fill="#111e30" stroke="#c4a1ff" stroke-width="2"/>
+<text x="951" y="307" font-family="Arial,sans-serif" text-anchor="middle" font-size="21" font-weight="bold" fill="#c4a1ff">NEURAL-READY METADATA</text>
+<text x="951" y="335" font-family="Arial,sans-serif" text-anchor="middle" font-size="14" fill="#e9f1fa">176-bit observation + reasons + rule ID</text>
+<text x="951" y="357" font-family="Arial,sans-serif" text-anchor="middle" font-size="13" fill="#96aabe">Explicitly counted best-effort drops / lossless option</text>
+<text x="600" y="428" font-family="Arial,sans-serif" text-anchor="middle" font-size="15" fill="#96aabe">Future: neural inference, large raw-payload DMA, protected evidence journal, FPGA validation</text>
+<text x="600" y="452" font-family="Arial,sans-serif" text-anchor="middle" font-size="14" fill="#96aabe">Implemented here: synchronous classifier and SEF frontend, not a trained model or physical sensor interface</text>
+</svg>
