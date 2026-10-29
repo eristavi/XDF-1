@@ -1,0 +1,22 @@
+name: XDF-1 M1 Verification
+on:
+  push:
+  pull_request:
+jobs:
+  python-and-rtl:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Python project
+        run: python -m pip install -e . pytest
+      - name: Python reference and graph verification
+        run: make python-test
+      - name: Install Verilator
+        run: sudo apt-get update && sudo apt-get install -y verilator
+      - name: Lint RTL
+        run: make rtl-lint
+      - name: SystemVerilog integration simulation
+        run: make rtl-sim

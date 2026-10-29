@@ -1,0 +1,11 @@
+name: parallel_arithmetic
+nodes:
+  - {id: 0,  op: ADD,    dest: {node: 16, port: 0}}
+  - {id: 8,  op: SUB,    dest: {node: 16, port: 1}}
+  - {id: 16, op: XOR,    dest: {node: 24, port: 0}}
+  - {id: 24, op: OUTPUT}
+inputs:
+  A: {node: 0, port: 0}
+  B: {node: 0, port: 1}
+  C: {node: 8, port: 0}
+  D: {node: 8, port: 1}
