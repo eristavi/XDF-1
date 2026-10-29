@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# Build and simulation artifacts
+build/
+obj_dir/
+*.vcd
+*.fst
+*.log
+
+# Auto-generated RTL test vectors
+tb/reference_vectors.txt
