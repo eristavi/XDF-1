@@ -4,7 +4,7 @@ RTL = rtl/xdf_pkg.sv rtl/xdf_tile.sv rtl/xdf_router.sv rtl/xdf_top.sv
 
 .PHONY: help python-test vectors reference rtl-sim rtl-lint synth clean
 help:
-	@echo "XDF-1 M1 targets: python-test vectors reference rtl-lint rtl-sim synth clean"
+	@echo "XDF-1 M1.1 targets: python-test vectors reference rtl-lint rtl-sim synth clean"
 
 python-test:
 	PYTHONPATH=python $(PYTHON) -m pytest -q tests
@@ -22,7 +22,6 @@ rtl-lint:
 
 rtl-sim: vectors
 	@command -v verilator >/dev/null || { echo "ERROR: verilator is not installed"; exit 2; }
-	@mkdir -p build/obj_dir
 	verilator --binary --timing -j 2 -Wno-fatal --top-module tb_xdf_top \
 	  --Mdir build/obj_dir $(RTL) tb/tb_xdf_top.sv
 	build/obj_dir/Vtb_xdf_top +VECTORS=tb/reference_vectors.txt

@@ -1,13 +1,16 @@
-name: XDF-1 M1 Verification
+name: XDF-1 Engineering Verification
 on:
   push:
   pull_request:
+permissions:
+  contents: read
 jobs:
   python-and-rtl:
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       - name: Install Python project
@@ -20,3 +23,39 @@ jobs:
         run: make rtl-lint
       - name: SystemVerilog integration simulation
         run: make rtl-sim
+
+  generic-synthesis:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install synthesis prerequisites
+        run: sudo apt-get update && sudo apt-get install -y yosys unzip
+      - name: Install sv2v v0.0.13 (Linux x86-64)
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error --retry 3 \
+            https://github.com/zachjs/sv2v/releases/download/v0.0.13/sv2v-Linux.zip \
+            --output /tmp/sv2v-Linux.zip
+          unzip -q /tmp/sv2v-Linux.zip -d /tmp/sv2v-install
+          binary=$(find /tmp/sv2v-install -type f -name sv2v -print -quit)
+          test -n "$binary"
+          sudo install -m 0755 "$binary" /usr/local/bin/sv2v
+          sv2v --version
+          yosys -V
+      - name: Technology-independent Yosys synthesis
+        run: make synth
+      - name: Upload synthesis evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generic-synthesis-evidence
+          path: |
+            build/synthesis.log
+            build/synthesis-status.txt
+            build/synthesis-summary.json
+          if-no-files-found: warn

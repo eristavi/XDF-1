@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 // XDF-1 v0.1 architectural constants. 64-bit little-field token.
 package xdf_pkg;
   localparam logic [2:0] OP_ADD    = 3'd0;
