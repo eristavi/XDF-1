@@ -85,3 +85,7 @@ make sensory-synth
 See `spec/sensory-event-protocol.md` for the frozen v0.2 semantics and error
 handling. Logs and netlist summaries are attached to the corresponding GitHub
 Actions run as downloadable artifacts.
+
+A second candidate using one-hot state-array reads passed simulation but saved
+only 23 generic cells (36,345 to 36,322); we deliberately did not adopt it.
+See [`OPTIMIZATION_EXPERIMENTS.md`](OPTIMIZATION_EXPERIMENTS.md) for the evidence.

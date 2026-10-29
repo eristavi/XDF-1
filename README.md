@@ -69,7 +69,8 @@ simulation cycles, **not physical nanoseconds** or guaranteed worst-case latency
 Generic Yosys synthesis (not FPGA device mapping) reports **36,345 leaf cells,
 11,436 sequential** for the standalone 64-stream sensory block. Synthesis
 includes strict checks for conflicting drivers and implausible state elimination.
-See [`reports/M2_SEF_GATES.md`](reports/M2_SEF_GATES.md) and
+See [`reports/M2_SEF_GATES.md`](reports/M2_SEF_GATES.md),
+[`reports/OPTIMIZATION_EXPERIMENTS.md`](reports/OPTIMIZATION_EXPERIMENTS.md), and
 [`spec/sensory-event-protocol.md`](spec/sensory-event-protocol.md).
 
 ```bash
