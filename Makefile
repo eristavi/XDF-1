@@ -22,6 +22,7 @@ rtl-lint:
 
 rtl-sim: vectors
 	@command -v verilator >/dev/null || { echo "ERROR: verilator is not installed"; exit 2; }
+	@mkdir -p build/obj_dir
 	verilator --binary --timing -j 2 -Wno-fatal --top-module tb_xdf_top \
 	  --Mdir build/obj_dir $(RTL) tb/tb_xdf_top.sv
 	build/obj_dir/Vtb_xdf_top +VECTORS=tb/reference_vectors.txt
