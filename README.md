@@ -64,7 +64,7 @@ No loops, no arbitrary memory loads/stores, no external I/O peripherals, no hard
 ## Next milestones
 
 - M1: Python reference and RTL simulations have passed on GitHub Actions.
-- M1.1: eliminate observed RTL lint warnings and produce auditable generic synthesis counts (see `reports/M1_1_SYNTHESIS_GATE.md`).
+- M1.1: **verified 29 Oct 2026** - 23 Python tests and 1000 RTL regression cases pass; generic Yosys synthesis reports 90,085 leaf cells (5,183 sequential). See `reports/M1_1_SYNTHESIS_GATE.md`.
 - M2: parameterize tile/node counts, strengthen assertions/formal properties, add cancellation and per-tag lifetime monitoring.
 - M3: add stateful/loop constructs and compare behavior against baseline RISC-V and another dataflow implementation.
 - M4: FPGA mapping, clock constraint and measured board-level behavior.
