@@ -59,7 +59,7 @@ module xdf_sensory #(
   end
 
   // Fixed small FIFO per physical ingress lane. Each can handshake on the same edge.
-  logic [95:0] fifo [0:LANES-1][0:DEPTH-1];
+  logic [95:0] fifo [0:LANES*DEPTH-1];
   logic [PTR_BITS-1:0] head [0:LANES-1];
   logic [PTR_BITS-1:0] tail [0:LANES-1];
   logic [CNT_BITS-1:0] count [0:LANES-1];
@@ -78,7 +78,7 @@ module xdf_sensory #(
     idle = !result_valid;
     for (int i=0;i<LANES;i++) begin
       lane_valid[i] = count[i] != CNT_BITS'(0);
-      lane_priority[i] = fifo[i][head[i]][89:88];
+      lane_priority[i] = fifo[i*DEPTH + int'(head[i])][89:88];
       if(lane_valid[i]) idle = 1'b0;
     end
   end
@@ -107,7 +107,7 @@ module xdf_sensory #(
     end
   end
   assign pop_valid = selected_valid && emit_ready && !cfg_valid;
-  assign pop_data = fifo[selected_lane][head[selected_lane]];
+  assign pop_data = fifo[int'(selected_lane)*DEPTH + int'(head[selected_lane])];
 
   always_comb begin
     for(int i=0;i<LANES;i++) begin
@@ -121,6 +121,15 @@ module xdf_sensory #(
   for(genvar l=0;l<LANES;l++) begin : ingress_lanes
     wire writing = in_valid[l] && in_ready[l];
     wire reading = pop_valid && selected_lane==LANE_BITS'(l);
+    // Each physical queue cell has exactly one elaborated writer; a variable
+    // index write to a multidimensional array caused sv2v/Yosys to drive
+    // signal slices with X in its earlier technology-independent netlist.
+    for (genvar d=0;d<DEPTH;d++) begin : storage
+      always_ff @(posedge clk) begin
+        if (writing && tail[l]==PTR_BITS'(d))
+          fifo[l*DEPTH + d] <= in_event[l*96 +: 96];
+      end
+    end
     always_ff @(posedge clk or negedge rst_n) begin
       if(!rst_n) begin
         head[l] <= '0;
@@ -128,7 +137,6 @@ module xdf_sensory #(
         count[l] <= '0;
       end else begin
         if(writing) begin
-          fifo[l][tail[l]] <= in_event[l*96 +: 96];
           tail[l] <= (tail[l]==PTR_BITS'(DEPTH-1)) ? '0 : tail[l]+PTR_BITS'(1);
         end
         if(reading) begin
