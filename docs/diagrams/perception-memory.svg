@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="620" viewBox="0 0 1280 620" role="img" aria-label="XDF-1 data lifetimes: raw, active perception, and episodic memory">
+<title>XDF-1 data lifetimes: raw, active perception, and episodic memory</title>
+<rect width="1280" height="620" fill="#0a1425"/>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#7892aa"/></marker></defs>
+<text x="640" y="48" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="26" font-weight="700">THREE DATA LIFETIMES  |  EXPERIENCE WITHOUT RECORDING EVERYTHING</text>
+<text x="640" y="79" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="15" font-weight="400">Continuous sensor input is the present; current state is understanding; selective archive is memory.</text>
+<rect x="66" y="125" width="1148" height="92" rx="13" fill="#10253a" stroke="#7cb5ff" stroke-width="2"/>
+<text x="640.0" y="157" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="23" font-weight="700">LIVE ENVIRONMENT  /  500 MB/s</text>
+<text x="640.0" y="180" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">4 Gb/s raw target  •  sensor-specific streams  •  normal observations are temporary</text>
+<path d="M640 217 L640 254" fill="none" stroke="#7892aa" stroke-width="2.4" marker-end="url(#arr)"/>
+<rect x="76" y="259" width="520" height="101" rx="13" fill="#10253a" stroke="#7cb5ff" stroke-width="2"/>
+<text x="336.0" y="291" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="20" font-weight="700">TRANSIENT RAW MEMORY</text>
+<text x="336.0" y="314" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">5-30 s external DRAM ring  •  2.5-15 GB at target rate</text>
+<rect x="684" y="259" width="520" height="101" rx="13" fill="#10253a" stroke="#e8a6f3" stroke-width="2"/>
+<text x="944.0" y="291" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="20" font-weight="700">ACTIVE PERCEPTION</text>
+<text x="944.0" y="314" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">Features + fused world state + attention + reflex</text>
+<path d="M596 310 H684" fill="none" stroke="#4fe1d2" stroke-width="2.2" marker-end="url(#arr)"/>
+<path d="M336 360 V394 H640 V412" fill="none" stroke="#7cb5ff" stroke-width="2.2" marker-end="url(#arr)"/>
+<path d="M944 360 V394 H640 V412" fill="none" stroke="#e8a6f3" stroke-width="2.2" marker-end="url(#arr)"/>
+<rect x="322" y="413" width="636" height="86" rx="13" fill="#10253a" stroke="#4fe1d2" stroke-width="2"/>
+<text x="640.0" y="445" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="21" font-weight="700">AMEE  /  IMPORTANCE + CONTEXT SELECTOR</text>
+<text x="640.0" y="468" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">Novelty  •  safety  •  relevance  •  uncertainty  •  past experience</text>
+<path d="M640 499 V522" fill="none" stroke="#4fe1d2" stroke-width="2.2" marker-end="url(#arr)"/>
+<rect x="176" y="526" width="928" height="74" rx="13" fill="#10253a" stroke="#ffd18a" stroke-width="2"/>
+<text x="640.0" y="558" fill="#edf5ff" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="21" font-weight="700">PERSISTENT EPISODES  /  AVERAGE TARGET: 1-10%</text>
+<text x="640.0" y="581" fill="#a7bed1" text-anchor="middle" font-family="Arial, DejaVu Sans, sans-serif" font-size="13" font-weight="400">5-50 MB/s  •  432 GB-4.32 TB/day  •  exceptions for protected events</text>
+<text x="1200" y="615" fill="#a7bed1" text-anchor="end" font-family="Arial, DejaVu Sans, sans-serif" font-size="14" font-weight="400">1-10% is an objective, never a hard limit on critical evidence.</text>
+</svg>

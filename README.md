@@ -1,122 +1,97 @@
-# XDF-1 — Event-Driven Sensory Computing Research Processor
+# XDF-1 — A Processor That Perceives, Decides and Remembers
 
-**A research architecture for concurrent perception, stateful sensor fusion, and low-latency decisions.**
+**Experimental event-driven sensory computing architecture.**
 
-XDF-1 explores a question: **can a programmable, tagged-token dataflow fabric receive many independent sensory events, correlate them, maintain relevant state, and produce useful decisions with less coordination overhead than a conventional instruction-driven approach?**
+**XDF-1 is not intended to be another general-purpose CPU.** Its long-term purpose is to continuously perceive the physical world through many different sensors, recognize meaningful changes, combine observations, react with low latency, maintain a useful representation of the present, and selectively preserve important experiences for future decisions.
 
-The aspiration is not another general-purpose CPU. It is a **sensory computing fabric** where the arrival of data makes the necessary work eligible to execute. Fast, bounded reactions and richer contextual interpretations should be able to coexist without forcing unrelated signals to wait on each other.
+The central research question is whether **tagged-token dataflow computing**, combined with specialized neural perception and an autonomous memory hierarchy, can provide a programmable and efficient alternative for selected real-time sensory workloads. We will **measure**, rather than assume, advantages over CPUs, GPUs and existing FPGA solutions.
 
-![XDF-1 sensory event fabric: sensors, acquisition, processing tiles, state and fusion, decision engine, actions, and feedback](docs/diagrams/sensory-fabric.svg)
+![Proposed XDF-1 system architecture with physical sensors, two data planes, neural perception, fast reflex processing, live world state, and selective episodic memory](docs/diagrams/xdf-vision.svg)
 
-> **Project philosophy:** sense concurrently; preserve event meaning and timing; compute when operands are ready; combine evidence over time; make explainable decisions; use feedback to improve the next observation.
+> **Design philosophy:** **Sense everything useful. Understand continuously. React when necessary. Remember what matters. Learn only through validated adaptation.**
 
-## Two complementary execution paths
+The *brain* comparison is functional: raw sensory input is the **present**, compact working state is an ongoing **interpretation**, and experience memory is **selected past information**. We make **no claim of consciousness or biological equivalence**.
 
-![Two paths: fast reflex rules for time-sensitive events and contextual fusion for multi-sensor decisions](docs/diagrams/decision-paths.svg)
+## Raw perception is not the same thing as memory
 
-- **Fast reflex:** bounded dataflow rules and priorities for events with explicit response deadlines. A future safety-critical installation would require *separate, validated fail-safe protections*; XDF-1 is not yet such a safety controller.
-- **Contextual decision:** combine timestamped observations, filtering, historical state, confidence/quality indicators, and programmable rules or future AI models. Report **what** decision was made and **why**.
+A sensor processor should not store the entire environment simply because the data arrived. Incoming information is processed in the moment; features and working context are updated; most raw buffers can expire. When a meaningful situation occurs, XDF-1 should preserve a meaningful event record and, when justified, the sensor data **before and after** the event. Previously stored experiences should later be retrievable as context.
 
-Not every event must pass through every layer. Sensor rates can be very different: a high-bandwidth camera may require more resources than hundreds of low-rate sensors. We therefore measure **sustained events per second, burst capacity, per-event latency, bounded queue behavior, and energy per meaningful decision**, not sensor count alone.
+![Three data lifetimes: real-time raw environment, working perception, and selected long-term memories](docs/diagrams/perception-memory.svg)
 
-## Why dataflow?
+| Information lifetime | What it represents | Planned location |
+| --- | --- | --- |
+| **Live sensory input** | Original camera frames, point clouds, radio measurements, audio and sensor samples | High-speed acquisition with bounded external DRAM ring |
+| **Working world state** | Current objects, motion, features, measurements, confidence, uncertainty and active context | Small on-chip state + external RAM |
+| **Episodic memory (AMEE)** | Significant experiences, decisions, model explanations, linked evidence and optional raw clips | Indexed, encrypted nonvolatile storage |
 
-![Illustrative instruction-driven versus tagged-token dataflow execution](docs/diagrams/execution-model.svg)
+**A future Neural Perception Engine (NPE)** will use modality-specific feature encoders and time-aware fusion, rather than forcing all raw data through one large universal model. **A fast-reflex path must not wait on neural inference or disk I/O.** Safety-critical applications must use separately validated protections.
 
-XDF-1 currently uses *tagged dataflow execution*: operations become eligible when their input ports have received matching tokens. The reference implementation uses a synchronous clock and a round-robin token router. A conventional CPU can also exploit parallelism; this illustration is a model comparison **not proof of a speed or power advantage**. Dataflow has extensive academic and commercial precedents; novel claims require demonstration against prior art.
+## The 500 MB/s goal, in actual engineering units
 
-## Technical foundation: implemented versus proposed
+We target the ability to **accept at least 500 megabytes per second of heterogeneous raw sensor payload**. This is a proposed system-level requirement, **not** achieved by the current RTL. The raw payload must use a separate high-bandwidth path; the existing small 96-bit sensory-event tokens are not video-frame transport.
 
-| Capability | Current status |
+| Proposed operating target | Decimal units |
+| --- | ---: |
+| Aggregate raw sensor input | **500 MB/s = 4 Gb/s** before transport overhead |
+| Raw data produced in an hour / day | 1.8 TB / 43.2 TB |
+| 5–30-second raw-data window | **2.5–15 GB of external DRAM** |
+| **1%** raw-volume equivalent selected for storage | 5 MB/s; 432 GB/day |
+| **10%** raw-volume equivalent selected for storage | 50 MB/s; 4.32 TB/day |
+
+**The 1–10% long-term retention goal is an *average storage budget*, not a hard cutoff or a demonstrated reduction.** Protected events can exceed it; important raw evidence must not disappear because a neural model produces a low score. We will evaluate retention against missed-event rates, quality of recollection, downstream decision accuracy and disk endurance. A disk archive can store summaries, feature vectors, optional raw clips, and linked evidence; a percentage alone says nothing about semantic preservation.
+
+## One architecture, two data planes and three decision paths
+
+**Physical acquisition (USAL, planned):** A **Universal Sensor Abstraction Layer** should normalize sensor IDs, units, time bases, calibration, payload formats, provenance and quality. It should support 50 requested sensor types across 10 families—from IMUs and proximity sensing to LiDAR, thermal imaging, microphones, gas and liquid analysis, structural sensors, EEG/ECG and radio—without hard-coding those devices into compute tiles. See [the complete 50-sensor inventory](spec/sensor-taxonomy.md). Supporting thousands of *logical streams* is an eventual scaling target, **not thousands of electrically connected sensors today**.
+
+**Raw payload plane (planned):** Camera frames, LiDAR sweeps, radar returns and high-rate waveforms should travel through DMA-capable buffers and external DRAM. Only compact *descriptors* and derived features need to enter the event/control plane. This separates byte throughput, event throughput and neural compute throughput.
+
+**Sensory event and dataflow plane (partially verified):** The existing **Sensory Event Fabric (SEF)** accepts four ready/valid input lanes, 64 logical sensor IDs, and one validated sensory decision per cycle at most. It supports priority arbitration, source-provided timestamp/sequence checking, bounded queues, fixed-point filtering, group fusion and backpressure. The M2.1 integrated wrapper forwards validated observations to the four-tile tagged-dataflow engine for a fixed `SUB(raw, smoothed) -> OUTPUT` computation, then produces a contextual result. [Integration contract](spec/integrated-sensor-pipeline.md).
+
+![Distinct fast-reflex and contextual paths](docs/diagrams/decision-paths.svg)
+
+**Fast Reflex Engine (planned):** Future deterministic, programmable predicates and deadline-aware event routing for urgent situations, independent of neural scoring and storage.
+
+**Neural Perception Engine (planned):** Specialized visual, acoustic, motion, spatial and scalar encoders; time-aligned fusion; calibrated novelty, uncertainty and event likelihood. Initially benchmark inference on GPUs/NPUs using interoperable model formats (such as ONNX), and build custom XDF accelerators only after identifying measurable bottlenecks.
+
+**Autonomous Memory & Experience Engine — AMEE (reference software started):** Select important event summaries and source-data references using a transparent policy; preserve pre/post-event context; make protected events bypass elective storage budgets; maintain provenance and model version. Long-term raw recording and trained-model-based selection are **not yet implemented**. See [perception-memory architecture](spec/perception-memory-architecture.md).
+
+## What has actually been demonstrated?
+
+| Capability | Current evidence |
 | --- | --- |
-| Four synchronous 32-bit compute tiles | **Implemented and RTL-simulated** |
-| Eight graph nodes per tile; 32 nodes total | **Implemented** |
-| Two concurrent `(context, epoch)` tag slots | **Implemented and tested** |
-| 64-bit token encoding; ready/valid router | **Implemented and tested** |
-| ADD, SUB, XOR, AND, PASS, OUTPUT on acyclic graphs | **Implemented** |
-| Python graph loader, reference model, automated tests | **Implemented** |
-| Generic logic synthesis and machine-readable cell accounting | **Verified in GitHub Actions** |
-| High-efficiency statically decoded operand storage | **Verified: 60.5% fewer generic cells for the four-tile core** |
-| 4-lane/64-stream standalone sensory event ingress, priorities, state and fusion | **Python + RTL simulated; generic synthesis verified** |
-| Source timestamps (carried, not synchronized), per-sensor sequence validation | **Implemented in sensory module** |
-| Real deadline scheduling, integration with DAG compute tiles | **Not implemented** |
-| Real sensor connectors, FPGA bitstream, operating system | **Not implemented** |
-| Fabricated semiconductor / ASIC performance or power numbers | **Not implemented / not measured** |
+| Four 32-bit XDF compute tiles; 8 nodes per tile (32 total) | RTL simulated and synthesized |
+| Two active `(context, epoch)` tags; 64-bit internal dataflow tokens | Verified with test vectors and backpressure |
+| Operations ADD, SUB, XOR, AND, PASS, OUTPUT on static directed graphs | Verified, **not yet general conditional programs** |
+| Core logic optimization | Generic cell count reduced **90,085 → 35,555** (60.5%) with core regressions passing |
+| SEF: 64 logical sensor IDs, 4 simultaneous accept lanes, 1 issue/cycle | Python oracle + cycle-exact RTL tests; generic synthesis |
+| M2.1 full sensor → XDF → decision wrapper | Verified: **840 events / 824 decisions / 16 rejected**, two in-flight tags; generic synthesis |
+| M2.1 integrated hardware generic synthesis | **73,019 leaf cells / 17,184 sequential**; no target FPGA mapping |
+| Current world-state and selective AMEE budget | **Deterministic Python reference only**, new tests; no real 500 MB/s I/O |
+| Neural-network inference/training, GPU integration, real DMA capture | **Not implemented** |
+| SSD payload writer, physical sensors, FPGA timing and watt measurements | **Not implemented / not measured** |
 
-### Measured first hardware optimization
+Historical measured gates: [M1.1 synthesis](reports/M1_1_SYNTHESIS_GATE.md), [M2 sensory hardware](reports/M2_SEF_GATES.md), [M2.1 integration](reports/M2_1_INTEGRATION_GATE.md), [optimization experiments](reports/OPTIMIZATION_EXPERIMENTS.md). Generic Yosys cells are **not** FPGA LUTs, physical gate area, clock frequency, or energy savings.
 
-Identical generic synthesis flows on GitHub Actions measured **90,085** leaf cells for the M1.1 baseline and **35,555** after replacing dynamic operand-register writes with statically decoded per-node writes: a **60.5% reduction in generic leaf cells** while maintaining 5,183 sequential cells. The optimized branch passed the existing 1,000-case RTL regression. These are **technology-independent Yosys cells**, not FPGA LUTs, ASIC area, measured power, or clock-frequency improvements; results can change with target mapping and synthesis settings.
+![First integrated four-lane SEF and tagged dataflow pipeline](docs/diagrams/integrated-pipeline.svg)
 
-The original M1.1 synthesis and RTL CI results are available in [`reports/M1_1_SYNTHESIS_GATE.md`](reports/M1_1_SYNTHESIS_GATE.md). Ongoing work is tracked in [`spec/architecture.md`](spec/architecture.md) and [`fpga/README.md`](fpga/README.md).
+## Development roadmap and acceptance principles
 
-## First verified sensory prototype (standalone SEF)
+![Verified hardware, reference memory architecture, and future neural, sensor and FPGA gates](docs/diagrams/milestones.svg)
 
-The first **hardware-simulated Sensory Event Fabric** now ingests four physical
-ready/valid lanes concurrently and distinguishes **64 logical sensor IDs**.
-Its single-issue decision engine performs signed fixed-point smoothing,
-latest-value four-sensor group fusion, per-sensor/group threshold decisions,
-priority-aware arbitration with bounded low-priority service, and explicit
-fault reporting for invalid or stale observations. It is **not connected to the
-four-tile DAG processor yet**.
+**M2.2A — Architecture and semantic reference (this milestone):** Clearly specify the vision, 50-sensor taxonomy, raw/event separation, 1–10% retention model and neural boundary. Implement a testable *working-state* model and an asynchronous *event-memory policy* with explicit fault accounting. **This is not real sensor throughput or a trained neural network.**
 
-A deterministic Python-generated reference workload exercised **2,514
-simulation cycles**, **1,887 accepted events**, **1,695 correct decisions**,
-**192 rejected events**, and **625 cycles of held output under backpressure**.
-Modelled accept-to-result latency under *this specific workload* averaged
-**10.9 cycles**, with **44-cycle p99** and **57-cycle maximum**. These are
-simulation cycles, **not physical nanoseconds** or guaranteed worst-case latency.
+**M2.2B — Programmable reflexes:** Extend RTL with comparisons, predicates, conditional dataflow and bounded urgent-event behavior; independently cross-check RTL against the reference model and retain all existing tests.
 
-Generic Yosys synthesis (not FPGA device mapping) reports **36,345 leaf cells,
-11,436 sequential** for the standalone 64-stream sensory block. Synthesis
-includes strict checks for conflicting drivers and implausible state elimination.
-See [`reports/M2_SEF_GATES.md`](reports/M2_SEF_GATES.md),
-[`reports/OPTIMIZATION_EXPERIMENTS.md`](reports/OPTIMIZATION_EXPERIMENTS.md), and
-[`spec/sensory-event-protocol.md`](spec/sensory-event-protocol.md).
+**M2.3 — Neural perception:** Start with real sensor datasets and externally accelerated inference. Validate time alignment, classification/recall, inference delays, model failure modes, confidence and dataset drift before considering new in-silicon matrix units.
 
-```bash
-# Verilator and a C++ toolchain required
-make sensory-lint
-make sensory-sim
+**M3 — Physical acquisition:** Choose FPGA/SoC hardware, implement actual DMA, external memory pinning and sensor adapters. Measure sustained **500 MB/s end-to-end**, backpressure, dropped events, time synchronization and tail latency.
 
-# sv2v and Yosys required
-make sensory-synth
-```
+**M4 — Reliable long-term memories:** Transactional payload persistence, event index, retrieval, expiration/privacy controls, protected evidence retention, actual bytes written and SSD endurance; measure accuracy and retention jointly.
 
-## Integrated sensor-to-dataflow hardware (M2.1 verified)
+**M5 — Comparative benchmarks:** Measure latency, p99/worst-case, throughput, FPGA resources and energy against credible CPU/GPU/FPGA baselines. No femtosecond or zeptosecond end-to-end reaction-time claims without physical measurement.
 
-![Verified-components integration plan: four input lanes, the 64-sensor event fabric, the four-tile tagged-dataflow processor, and contextual decision output](docs/diagrams/integrated-pipeline.svg)
-
-The next experimental hardware wrapper links **the previously independent SEF and XDF graph engine**. A validated sensor sample and its exponential moving average are packed into two tagged operands; XDF executes a fixed `SUB(raw, EMA) → OUTPUT` graph using up to **two concurrent contexts**. The final stream preserves the 164-bit sensory observation, the computed 32-bit delta, and an explainable threshold decision.
-
-- Four sensor ingress lanes and 64 logical sensor IDs (one SEF decision per clock at most).
-- In-flight tag/epoch matching prevents cross-event metadata mix-ups.
-- The downstream consumer can stall without silently dropping an accepted observation.
-- Input faults are kept separate from internal compute faults.
-- The graph is intentionally fixed for this integration gate; **arbitrary programs, physical I/O, clocks and timing, and real actuator control are not yet implemented.**
-
-See [the interface contract](spec/integrated-sensor-pipeline.md) and run `make pipeline-lint`, `make pipeline-sim`, and `make pipeline-synth` with the required external HDL tools. **All six GitHub CI gates passed**: 45 Python tests, the existing RTL regressions, and the integrated 840-event / 824-decision / 16-rejection test with two in-flight contexts. Technology-independent synthesis reports **73,019 generic cells / 17,184 sequential**. These are simulated and synthesized results only, not FPGA timing or physical sensor measurements. See [the M2.1 engineering report](reports/M2_1_INTEGRATION_GATE.md).
-
-## Phase 1 — Architecture optimization
-
-1. Measure logic and latency against an unmodified, passing baseline.
-2. Reduce costly operand storage and local scheduling while preserving token semantics.
-3. Compare router buffering, arbitration, fairness and backpressure alternatives.
-4. Parameterize and test smaller/larger compute fabrics with explicit resource limits.
-
-## Phase 2 — Sensory intelligence and control
-
-5. Define a **Sensory Event Fabric (SEF)** that accepts independent streams, timestamps events close to their sources, checks validity, and applies bounded admission control.
-6. Support event priority and deadline metadata, plus **fair scheduling** to prevent background starvation.
-7. Add predicates, comparisons, threshold triggers, and conditional routing for fast reflex logic.
-8. Add explicit state, aggregation windows, deterministic ordering rules and feedback. Extend arithmetic with multiply-accumulate and saturating/fixed-point operations after numerical specification and cross-checking.
-
-**First meaningful multi-sensor milestone:** simulate 64 logical streams with concurrent bursts, event reordering, output backpressure, and stateful fusion; demonstrate explainable decisions while checking event accounting and worst-case latency. Hardware interfaces and board-level measurements follow only when these contracts pass reference tests and RTL simulation.
-
-### Timing and scientific accuracy
-
-Femtosecond (`10^-15 s`) and zeptosecond (`10^-21 s`) interactions are *long-term physical research interests*, **not claims about digital sensor-to-decision latency**. We must measure capture, transport, queuing, computation, and actuation separately. Hardware physical limitations, clock rates, and sensor bandwidth determine practical response times.
-
-## Run the existing M1 processor
+## Run the existing processor and reference experiments
 
 Install Python 3.10+, PyYAML and pytest:
 
@@ -124,10 +99,9 @@ Install Python 3.10+, PyYAML and pytest:
 python3 -m pip install -e . pytest
 make python-test
 make reference
-make vectors
 ```
 
-The bundled graph computes `(A+B) XOR (C-D)` and returns **10** for `A=7, B=5, C=9, D=3`.
+The original graph computes `(A+B) XOR (C-D)`; for `A=7, B=5, C=9, D=3`, output is **10**.
 
 ```bash
 xdf1 programs/first_graph.yaml \
@@ -135,22 +109,43 @@ xdf1 programs/first_graph.yaml \
   --context 1 --epoch 7 --emit build/run.json
 ```
 
-For RTL verification, install Verilator and a C++ toolchain and run `make rtl-lint && make rtl-sim`.
-For technology-independent synthesis, install `sv2v` and Yosys and run `make synth`. CI runs these stages separately, publishes synthesis evidence and rejects failures. The `build/` directory contains generated artifacts and is not checked into source control.
+With Verilator, a C++ toolchain, `sv2v`, and Yosys installed, the independent hardware gates remain available:
 
-## Repository map
+```bash
+make rtl-lint && make rtl-sim && make synth
+make sensory-lint && make sensory-sim && make sensory-synth
+make pipeline-lint && make pipeline-sim && make pipeline-synth
+```
 
-- [`rtl/`](rtl/) — SystemVerilog tiles, router, host interface and processor core.
-- [`python/xdf1/`](python/xdf1/) — token definitions, graph validation, independent Python reference, host CLI and research models.
-- [`tests/`](tests/), [`tb/`](tb/) — Python tests and SystemVerilog integration testbench.
-- [`programs/`](programs/) — example computation graph.
-- [`tools/`](tools/) — deterministic vectors, synthesis analysis and documentation utilities.
-- [`spec/`](spec/) — execution contract, sensory event format, limitations and verification plan.
-- [`docs/diagrams/`](docs/diagrams/) — editable, self-contained SVG architecture illustrations.
-- [`fpga/`](fpga/), [`reports/`](reports/) — future FPGA acceptance criteria and measured evidence.
+Run the **metadata-only** synthetic memory-reference demo. It *assumes* 500 MB/s but deliberately does **not** allocate, transmit or persist that raw rate:
 
-## What XDF-1 is not (yet)
+```bash
+PYTHONPATH=python python3 tools/demo_memory.py --seconds 350 --target 0.05
+# Optional: persist only structured metadata records, not raw payload bytes
+PYTHONPATH=python python3 tools/demo_memory.py --archive build/demo-events.jsonl
+```
 
-XDF-1 is **not a CPU replacement, a fabricated chip, a safety-certified controller, a neuromorphic device, or an AI model**. The current hardware has no general memory access, arbitrary loops, untrusted-program isolation or physical sensory I/O. The architectural goal is to *test*, rather than assume, whether this style of computation improves latency, energy efficiency or predictable throughput on useful sensory workloads.
+Regenerate the new illustrations with `python3 tools/make_vision_diagrams.py`. These are deterministic, self-contained SVG files with no external images, scripts or required fonts. Tests and CI should remain green before changes merge into `main`.
 
-The project's source is available under the [MIT License](LICENSE). Contributions and reproducible comparative benchmarks are welcome.
+## Engineering research and reference patterns
+
+- [NVIDIA Holoscan Sensor Bridge](https://docs.nvidia.com/holoscan/sensor-bridge/applications/architecture) — a practical example of separating high-speed sensor data from peripheral control and using FPGA + accelerated host I/O.
+- [ROS 2 QoS design](https://design.ros2.org/articles/qos) — explicit reliability, history and resource policies for mixed sensor streams.
+- [IEEE 1588-2019](https://standards.ieee.org/ieee/1588/6825/) — precision clock synchronization and the limitations of timing coherence.
+- [ONNX Runtime Execution Providers](https://onnxruntime.ai/docs/execution-providers/) — hardware-independent neural inference orchestration.
+- [SNIA SSD endurance](https://www.snia.org/education/what-is-ssd) — account for terabytes written, writes/day and flash wear when designing episodic archives.
+
+These are external research references, **not evidence that XDF-1 has achieved their performance**. See [the full engineering rationale](spec/perception-memory-architecture.md) and [M2.2A verification report](reports/M2_2A_RESEARCH_AND_REFERENCE_GATE.md).
+
+## Repository guide and limitations
+
+- [`rtl/`](rtl/) — existing SystemVerilog dataflow core, sensory fabric and M2.1 integrated prototype.
+- [`python/xdf1/`](python/xdf1/) — compiler, independent reference models, live world state and new AMEE policy reference.
+- [`tests/`](tests/), [`tb/`](tb/) — Python and RTL regression tests.
+- [`spec/`](spec/) — architecture, sensor taxonomy, memory contracts and verification criteria.
+- [`docs/diagrams/`](docs/diagrams/) — source SVGs, generated by [`tools/`](tools/).
+- [`reports/`](reports/), [`fpga/`](fpga/) — evidence, experimental results and board-readiness criteria.
+
+XDF-1 is **research software and RTL**, not a finished CPU replacement, trained neural network, industrial safety controller, medical instrument, fabricated ASIC or validated physical AI product. Sensitive sensory data requires independent security and privacy controls; learned decisions require robust validation. Our goal is to demonstrate a real advantage scientifically, not to assume one.
+
+[MIT License](LICENSE).
