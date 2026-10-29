@@ -50,7 +50,13 @@ We target the ability to **accept at least 500 megabytes per second of heterogen
 
 ![Distinct fast-reflex and contextual paths](docs/diagrams/decision-paths.svg)
 
-**Fast Reflex Engine (planned):** Future deterministic, programmable predicates and deadline-aware event routing for urgent situations, independent of neural scoring and storage.
+**Fast Reflex Engine (M2.2B hardware prototype):** We now have a separate `xdf_reflex` classifier operating on validated SEF observations, with eight prioritized configurable rules, signed raw thresholds, widened 33-bit change detection, group alarms, and non-maskable alarm routing. A new `xdf_perception_frontend` connects SEF directly to this reflex classifier without modifying the previously verified M2.1 XDF graph processor. **Deadline-aware scheduling and conditional branching inside XDF graph tiles remain future work.**
+
+![Programmable sensory reflex and independent neural-ready metadata stream](docs/diagrams/reflex-neural-path.svg)
+
+**Independent output paths:** a one-entry **reflex channel** obeys ready/valid and cannot drop accepted urgent records inside the classifier. A separate **neural-ready context channel** carries 176-bit observations with rule/reason metadata. In the default best-effort mode, neural consumer stalls cannot block a ready reflex output, but missing context copies—including those associated with alarms—are **explicitly counted**. Optional lossless mode backpressures both paths to avoid contextual loss, at the cost of possible reflex delay. Neither mode guarantees persistent evidence preservation. [Detailed rule and backpressure specification](spec/programmable-reflex.md).
+
+**Verification evidence:** 79 Python tests, **3,201** cycle-accurate reference checks; standalone reflex generic synthesis **4,806 cells / 897 sequential**; combined sensory+reflex frontend **41,158 cells / 12,333 sequential**. These are technology-independent logic counts, not clock frequency, power or neural inference throughput. [M2.2B report](reports/M2_2B_REFLEX_GATE.md).
 
 **Neural Perception Engine (planned):** Specialized visual, acoustic, motion, spatial and scalar encoders; time-aligned fusion; calibrated novelty, uncertainty and event likelihood. Initially benchmark inference on GPUs/NPUs using interoperable model formats (such as ONNX), and build custom XDF accelerators only after identifying measurable bottlenecks.
 
@@ -67,6 +73,8 @@ We target the ability to **accept at least 500 megabytes per second of heterogen
 | SEF: 64 logical sensor IDs, 4 simultaneous accept lanes, 1 issue/cycle | Python oracle + cycle-exact RTL tests; generic synthesis |
 | M2.1 full sensor → XDF → decision wrapper | Verified: **840 events / 824 decisions / 16 rejected**, two in-flight tags; generic synthesis |
 | M2.1 integrated hardware generic synthesis | **73,019 leaf cells / 17,184 sequential**; no target FPGA mapping |
+| M2.2B programmable reflex: rule bank + 2 independently buffered outputs | **RTL simulated, Python-oracle tested and generic-synthesized**; protected alarm override; documented context-overflow policy |
+| M2.2B complete validated-SEF → reflex frontend | **RTL simulated and synthesized**; existing M2.1 processor unchanged |
 | Current world-state and selective AMEE budget | **Deterministic Python reference only**, new tests; no real 500 MB/s I/O |
 | Neural-network inference/training, GPU integration, real DMA capture | **Not implemented** |
 | SSD payload writer, physical sensors, FPGA timing and watt measurements | **Not implemented / not measured** |
@@ -79,9 +87,9 @@ Historical measured gates: [M1.1 synthesis](reports/M1_1_SYNTHESIS_GATE.md), [M2
 
 ![Verified hardware, reference memory architecture, and future neural, sensor and FPGA gates](docs/diagrams/milestones.svg)
 
-**M2.2A — Architecture and semantic reference (this milestone):** Clearly specify the vision, 50-sensor taxonomy, raw/event separation, 1–10% retention model and neural boundary. Implement a testable *working-state* model and an asynchronous *event-memory policy* with explicit fault accounting. **This is not real sensor throughput or a trained neural network.**
+**M2.2A — Architecture and semantic reference (completed):** Clearly specify the vision, 50-sensor taxonomy, raw/event separation, 1–10% retention model and neural boundary. Implement a testable *working-state* model and an asynchronous *event-memory policy* with explicit fault accounting. **This is not real sensor throughput or a trained neural network.**
 
-**M2.2B — Programmable reflexes:** Extend RTL with comparisons, predicates, conditional dataflow and bounded urgent-event behavior; independently cross-check RTL against the reference model and retain all existing tests.
+**M2.2B — Programmable reflexes (first hardware gate verified):** Configurable ordered predicates, signed delta thresholds and independent reflex/context streams are implemented. Sensor-validation and reflex integration passed RTL and generic synthesis; protected contextual retention, neural inference and conditional graph-tile execution are still future engineering gates.
 
 **M2.3 — Neural perception:** Start with real sensor datasets and externally accelerated inference. Validate time alignment, classification/recall, inference delays, model failure modes, confidence and dataset drift before considering new in-silicon matrix units.
 
@@ -115,6 +123,8 @@ With Verilator, a C++ toolchain, `sv2v`, and Yosys installed, the independent ha
 make rtl-lint && make rtl-sim && make synth
 make sensory-lint && make sensory-sim && make sensory-synth
 make pipeline-lint && make pipeline-sim && make pipeline-synth
+make reflex-lint && make reflex-sim && make reflex-lossless-sim && make reflex-synth
+make frontend-lint && make frontend-sim && make frontend-synth
 ```
 
 Run the **metadata-only** synthetic memory-reference demo. It *assumes* 500 MB/s but deliberately does **not** allocate, transmit or persist that raw rate:
@@ -139,8 +149,8 @@ These are external research references, **not evidence that XDF-1 has achieved t
 
 ## Repository guide and limitations
 
-- [`rtl/`](rtl/) — existing SystemVerilog dataflow core, sensory fabric and M2.1 integrated prototype.
-- [`python/xdf1/`](python/xdf1/) — compiler, independent reference models, live world state and new AMEE policy reference.
+- [`rtl/`](rtl/) — existing SystemVerilog dataflow core, sensory fabric, M2.1 graph wrapper and M2.2B sensory/reflex frontend.
+- [`python/xdf1/`](python/xdf1/) — compiler, independent reference models, programmable reflex oracle, live world state and AMEE policy reference.
 - [`tests/`](tests/), [`tb/`](tb/) — Python and RTL regression tests.
 - [`spec/`](spec/) — architecture, sensor taxonomy, memory contracts and verification criteria.
 - [`docs/diagrams/`](docs/diagrams/) — source SVGs, generated by [`tools/`](tools/).

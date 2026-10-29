@@ -2,9 +2,9 @@ SHELL := /bin/bash
 PYTHON ?= python3
 RTL = rtl/xdf_pkg.sv rtl/xdf_tile.sv rtl/xdf_router.sv rtl/xdf_top.sv
 
-.PHONY: help python-test vectors reference rtl-sim rtl-lint synth sensory-vectors sensory-lint sensory-sim sensory-synth clean pipeline-lint pipeline-sim pipeline-synth
+.PHONY: reflex-lossless-sim reflex-vectors reflex-lint reflex-sim reflex-synth frontend-lint frontend-sim frontend-synth help python-test vectors reference rtl-sim rtl-lint synth sensory-vectors sensory-lint sensory-sim sensory-synth clean pipeline-lint pipeline-sim pipeline-synth
 help:
-	@echo "XDF-1 targets: python-test vectors reference rtl-lint rtl-sim synth sensory-vectors sensory-lint sensory-sim sensory-synth clean"
+	@echo "XDF-1 targets: python-test vectors reference rtl-lint rtl-sim synth sensory-vectors sensory-lint sensory-sim sensory-synth reflex-lint reflex-sim frontend-lint frontend-sim reflex-synth frontend-synth clean"
 
 python-test:
 	PYTHONPATH=python $(PYTHON) -m pytest -q tests
@@ -64,5 +64,47 @@ pipeline-sim:
 pipeline-synth:
 	bash tools/synth_pipeline.sh
 
+
+# M2.2B programmable reflex classifier + validated SEF frontend.
+FRONTEND_RTL = rtl/xdf_sensory.sv rtl/xdf_reflex.sv rtl/xdf_perception_frontend.sv
+
+reflex-vectors:
+	PYTHONPATH=python $(PYTHON) tools/generate_reflex_vectors.py
+
+reflex-lint:
+	@command -v verilator >/dev/null || { echo "ERROR: Verilator is missing"; exit 2; }
+	verilator --lint-only --timing -Wno-fatal --top-module xdf_reflex rtl/xdf_reflex.sv
+
+reflex-sim: reflex-vectors
+	@command -v verilator >/dev/null || { echo "ERROR: Verilator is missing"; exit 2; }
+	@mkdir -p build/reflex_obj_dir
+	verilator --binary --timing -j 2 -Wno-fatal --top-module tb_xdf_reflex \
+	  --Mdir build/reflex_obj_dir rtl/xdf_reflex.sv tb/tb_xdf_reflex.sv
+	build/reflex_obj_dir/Vtb_xdf_reflex
+
+reflex-lossless-sim:
+	@command -v verilator >/dev/null || { echo "ERROR: Verilator is missing"; exit 2; }
+	@mkdir -p build/reflex_lossless_obj_dir
+	verilator --binary --timing -j 2 -Wno-fatal --top-module tb_xdf_reflex_lossless \
+	  --Mdir build/reflex_lossless_obj_dir rtl/xdf_reflex.sv tb/tb_xdf_reflex_lossless.sv
+	build/reflex_lossless_obj_dir/Vtb_xdf_reflex_lossless
+
+reflex-synth:
+	bash tools/synth_reflex.sh
+
+frontend-lint:
+	@command -v verilator >/dev/null || { echo "ERROR: Verilator is missing"; exit 2; }
+	verilator --lint-only --timing -Wno-fatal --top-module xdf_perception_frontend $(FRONTEND_RTL)
+
+frontend-sim:
+	@command -v verilator >/dev/null || { echo "ERROR: Verilator is missing"; exit 2; }
+	@mkdir -p build/frontend_obj_dir
+	verilator --binary --timing -j 2 -Wno-fatal --top-module tb_xdf_perception_frontend \
+	  --Mdir build/frontend_obj_dir $(FRONTEND_RTL) tb/tb_xdf_perception_frontend.sv
+	build/frontend_obj_dir/Vtb_xdf_perception_frontend
+
+frontend-synth:
+	bash tools/synth_frontend.sh
+
 clean:
-	rm -rf build/pipeline_obj_dir build/pipeline-synth.v build/pipeline-synthesis.log build/pipeline-yosys.json build/pipeline-synthesis-summary.json build/pipeline-synthesis-status.txt build/obj_dir build/sensory_obj_dir build/xdf1_synth.v build/synthesis.log build/yosys.json build/xdf_sensory_synth.v build/sensory-synthesis.log build/sensory-yosys.json build/sensory-synthesis-summary.json build/sensory-synthesis-status.txt
+	rm -rf build/reflex_lossless_obj_dir build/reflex_obj_dir build/frontend_obj_dir build/reflex-synth.v build/reflex-synthesis.log build/reflex-yosys.json build/reflex-synthesis-summary.json build/reflex-synthesis-status.txt build/frontend-synth.v build/frontend-synthesis.log build/frontend-yosys.json build/frontend-synthesis-summary.json build/frontend-synthesis-status.txt build/pipeline_obj_dir build/pipeline-synth.v build/pipeline-synthesis.log build/pipeline-yosys.json build/pipeline-synthesis-summary.json build/pipeline-synthesis-status.txt build/obj_dir build/sensory_obj_dir build/xdf1_synth.v build/synthesis.log build/yosys.json build/xdf_sensory_synth.v build/sensory-synthesis.log build/sensory-yosys.json build/sensory-synthesis-summary.json build/sensory-synthesis-status.txt
