@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="550" viewBox="0 0 1200 550" role="img" aria-label="XDF-1 fast reflex and contextual decision processing paths">
+<title>XDF-1 fast reflex and contextual decision processing paths</title>
+<rect width="1200" height="550" fill="#0b1220"/>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8297af"/></marker></defs>
+<text x="600" y="47" font-family="Segoe UI, Arial, sans-serif" font-size="27" font-weight="650" fill="#e9f1fa" text-anchor="middle">TWO COMPLEMENTARY RESPONSE PATHS</text>
+<text x="600" y="79" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="400" fill="#96aabe" text-anchor="middle">The architecture must not make urgent events wait for unrelated analysis.</text>
+<rect x="55" y="113" width="500" height="405" rx="18" fill="#101d2e" stroke="#ffcc78" stroke-width="2"/>
+<text x="305" y="151" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="650" fill="#ffcc78" text-anchor="middle">FAST REFLEX PATH</text>
+<text x="305" y="177" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#96aabe" text-anchor="middle">Latency-sensitive, bounded computation</text>
+<rect x="98" y="210" width="414" height="75" rx="14" fill="#111e30" stroke="#ffcc78" stroke-opacity=".85" stroke-width="2"/>
+<text x="305.0" y="241.5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="650" fill="#e9f1fa" text-anchor="middle">URGENT EVENT</text>
+<text x="305.0" y="266.5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">Threshold / hardware flag</text>
+<path d="M305 285 L305 313" stroke="#8297af" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="98" y="315" width="414" height="75" rx="14" fill="#111e30" stroke="#ffcc78" stroke-opacity=".85" stroke-width="2"/>
+<text x="305.0" y="346.5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="650" fill="#e9f1fa" text-anchor="middle">DIRECT DATAFLOW RULE</text>
+<text x="305.0" y="371.5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">Simple deterministic operation</text>
+<path d="M305 390 L305 418" stroke="#8297af" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="98" y="420" width="414" height="75" rx="14" fill="#111e30" stroke="#ffcc78" stroke-opacity=".85" stroke-width="2"/>
+<text x="305.0" y="451.5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="650" fill="#e9f1fa" text-anchor="middle">IMMEDIATE OUTPUT</text>
+<text x="305.0" y="476.5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">Actuate / flag / alert</text>
+<rect x="645" y="113" width="500" height="405" rx="18" fill="#101d2e" stroke="#c4a1ff" stroke-width="2"/>
+<text x="895" y="151" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="650" fill="#c4a1ff" text-anchor="middle">CONTEXTUAL DECISION PATH</text>
+<text x="895" y="177" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#96aabe" text-anchor="middle">Correlated, stateful observations</text>
+<rect x="688" y="210" width="414" height="75" rx="14" fill="#111e30" stroke="#c4a1ff" stroke-opacity=".85" stroke-width="2"/>
+<text x="895.0" y="241.5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="650" fill="#e9f1fa" text-anchor="middle">MULTIPLE SENSOR EVENTS</text>
+<text x="895.0" y="266.5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">Independent streams + timestamps</text>
+<path d="M895 285 L895 313" stroke="#8297af" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="688" y="315" width="414" height="75" rx="14" fill="#111e30" stroke="#c4a1ff" stroke-opacity=".85" stroke-width="2"/>
+<text x="895.0" y="346.5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="650" fill="#e9f1fa" text-anchor="middle">STATE + FUSION</text>
+<text x="895.0" y="371.5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">Temporal alignment / confidence</text>
+<path d="M895 390 L895 418" stroke="#8297af" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="688" y="420" width="414" height="75" rx="14" fill="#111e30" stroke="#c4a1ff" stroke-opacity=".85" stroke-width="2"/>
+<text x="895.0" y="451.5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="650" fill="#e9f1fa" text-anchor="middle">DECISION + SUMMARY</text>
+<text x="895.0" y="476.5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">Rule / model / explanation</text>
+<text x="600" y="541" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">Both paths require explicit latency budgets, bounded queues, and safe fallback behavior.</text>
+</svg>

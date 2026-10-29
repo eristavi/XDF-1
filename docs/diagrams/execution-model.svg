@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="470" viewBox="0 0 1200 470" role="img" aria-label="Conventional instruction sequencing compared with tagged-token dataflow">
+<title>Conventional instruction sequencing compared with tagged-token dataflow</title>
+<rect width="1200" height="470" fill="#0b1220"/>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8297af"/></marker></defs>
+<text x="600" y="45" font-family="Segoe UI, Arial, sans-serif" font-size="27" font-weight="650" fill="#e9f1fa" text-anchor="middle">WHAT MAKES XDF-1 DIFFERENT?</text>
+<text x="600" y="75" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="400" fill="#96aabe" text-anchor="middle">Illustrative execution models — modern CPUs also execute operations in parallel.</text>
+<text x="300" y="126" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="650" fill="#74a9ff" text-anchor="middle">INSTRUCTION-CENTRIC MODEL</text>
+<text x="900" y="126" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="650" fill="#2dd4bf" text-anchor="middle">TAGGED-TOKEN DATAFLOW MODEL</text>
+<rect x="155" y="160" width="290" height="63" rx="14" fill="#111e30" stroke="#74a9ff" stroke-opacity=".85" stroke-width="2"/>
+<text x="300.0" y="198.5" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="650" fill="#e9f1fa" text-anchor="middle">INSTRUCTION SEQUENCE</text>
+<path d="M300 223 L300 251" stroke="#8297af" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="155" y="253" width="290" height="63" rx="14" fill="#111e30" stroke="#74a9ff" stroke-opacity=".85" stroke-width="2"/>
+<text x="300.0" y="291.5" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="650" fill="#e9f1fa" text-anchor="middle">FETCH / DECODE / ISSUE</text>
+<path d="M300 316 L300 344" stroke="#8297af" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="155" y="346" width="290" height="63" rx="14" fill="#111e30" stroke="#74a9ff" stroke-opacity=".85" stroke-width="2"/>
+<text x="300.0" y="384.5" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="650" fill="#e9f1fa" text-anchor="middle">EXECUTE + RETIRE</text>
+<rect x="644" y="170" width="160" height="70" rx="14" fill="#111e30" stroke="#2dd4bf" stroke-opacity=".85" stroke-width="2"/>
+<text x="724.0" y="212.0" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="650" fill="#e9f1fa" text-anchor="middle">TOKEN A</text>
+<rect x="996" y="170" width="160" height="70" rx="14" fill="#111e30" stroke="#2dd4bf" stroke-opacity=".85" stroke-width="2"/>
+<text x="1076.0" y="212.0" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="650" fill="#e9f1fa" text-anchor="middle">TOKEN B</text>
+<path d="M724 240 L862 298" stroke="#2dd4bf" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<path d="M1076 240 L938 298" stroke="#2dd4bf" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="810" y="300" width="180" height="64" rx="14" fill="#111e30" stroke="#2dd4bf" stroke-opacity=".85" stroke-width="2"/>
+<text x="900.0" y="326.0" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="650" fill="#e9f1fa" text-anchor="middle">NODE FIRES</text>
+<text x="900.0" y="351.0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">when operands ready</text>
+<path d="M900 364 L900 392" stroke="#2dd4bf" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="810" y="396" width="180" height="59" rx="14" fill="#111e30" stroke="#2dd4bf" stroke-opacity=".85" stroke-width="2"/>
+<text x="900.0" y="432.5" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="650" fill="#e9f1fa" text-anchor="middle">OUTPUT EVENT</text>
+</svg>

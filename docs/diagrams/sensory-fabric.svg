@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="770" viewBox="0 0 1200 770" role="img" aria-label="XDF-1 sensory event computing architecture">
+<title>XDF-1 sensory event computing architecture</title>
+<rect width="1200" height="770" fill="#0b1220"/>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8297af"/></marker></defs>
+<text x="600" y="45" font-family="Segoe UI, Arial, sans-serif" font-size="27" font-weight="650" fill="#e9f1fa" text-anchor="middle">XDF-1  /  SENSORY INTELLIGENCE ARCHITECTURE</text>
+<text x="600" y="75" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="400" fill="#96aabe" text-anchor="middle">Many asynchronous sources  •  Concurrent processing  •  Continuous feedback</text>
+<rect x="60" y="111" width="260" height="78" rx="14" fill="#111e30" stroke="#74a9ff" stroke-opacity=".85" stroke-width="2"/>
+<text x="190.0" y="144.0" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="650" fill="#e9f1fa" text-anchor="middle">MOTION</text>
+<text x="190.0" y="169.0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">IMU / encoders</text>
+<path d="M190 189 L190 222" stroke="#8297af" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="330" y="111" width="260" height="78" rx="14" fill="#111e30" stroke="#74a9ff" stroke-opacity=".85" stroke-width="2"/>
+<text x="460.0" y="144.0" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="650" fill="#e9f1fa" text-anchor="middle">VISION</text>
+<text x="460.0" y="169.0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">Camera events</text>
+<path d="M460 189 L460 222" stroke="#8297af" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="600" y="111" width="260" height="78" rx="14" fill="#111e30" stroke="#74a9ff" stroke-opacity=".85" stroke-width="2"/>
+<text x="730.0" y="144.0" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="650" fill="#e9f1fa" text-anchor="middle">DISTANCE</text>
+<text x="730.0" y="169.0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">Radar / LiDAR</text>
+<path d="M730 189 L730 222" stroke="#8297af" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="870" y="111" width="260" height="78" rx="14" fill="#111e30" stroke="#74a9ff" stroke-opacity=".85" stroke-width="2"/>
+<text x="1000.0" y="144.0" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="650" fill="#e9f1fa" text-anchor="middle">OTHER</text>
+<text x="1000.0" y="169.0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">Environmental / RF</text>
+<path d="M1000 189 L1000 222" stroke="#8297af" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="90" y="223" width="1020" height="96" rx="14" fill="#111e30" stroke="#2dd4bf" stroke-opacity=".85" stroke-width="2"/>
+<text x="600.0" y="265.0" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="650" fill="#e9f1fa" text-anchor="middle">SENSORY EVENT FABRIC  (SEF)</text>
+<text x="600.0" y="290.0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">Identify • Timestamp • Validate • Queue • Prioritize • Regulate ingress</text>
+<path d="M600 319 L600 351" stroke="#8297af" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="90" y="353" width="1020" height="114" rx="14" fill="#111e30" stroke="#74a9ff" stroke-opacity=".85" stroke-width="2"/>
+<text x="600" y="386" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="650" fill="#e9f1fa" text-anchor="middle">CONFIGURABLE DATAFLOW EXECUTION FABRIC</text>
+<text x="600" y="406" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">Independent token-ready operations and bounded backpressure</text>
+<rect x="139" y="421" width="160" height="35" rx="7" fill="#183457" stroke="#74a9ff" stroke-opacity=".8"/>
+<text x="219" y="444" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="650" fill="#e9f1fa" text-anchor="middle">TILE 0</text>
+<rect x="393" y="421" width="160" height="35" rx="7" fill="#183457" stroke="#74a9ff" stroke-opacity=".8"/>
+<text x="473" y="444" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="650" fill="#e9f1fa" text-anchor="middle">TILE 1</text>
+<rect x="647" y="421" width="160" height="35" rx="7" fill="#183457" stroke="#74a9ff" stroke-opacity=".8"/>
+<text x="727" y="444" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="650" fill="#e9f1fa" text-anchor="middle">TILE 2</text>
+<rect x="901" y="421" width="160" height="35" rx="7" fill="#183457" stroke="#74a9ff" stroke-opacity=".8"/>
+<text x="981" y="444" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="650" fill="#e9f1fa" text-anchor="middle">TILE 3</text>
+<path d="M600 467 L600 498" stroke="#8297af" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="90" y="500" width="1020" height="81" rx="14" fill="#111e30" stroke="#c4a1ff" stroke-opacity=".85" stroke-width="2"/>
+<text x="600.0" y="534.5" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="650" fill="#e9f1fa" text-anchor="middle">STATE + SENSOR FUSION</text>
+<text x="600.0" y="559.5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">Temporal correlation • Filtering • Windowed summaries • Confidence</text>
+<path d="M600 581 L600 610" stroke="#8297af" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="90" y="611" width="1020" height="73" rx="14" fill="#111e30" stroke="#ffcc78" stroke-opacity=".85" stroke-width="2"/>
+<text x="600.0" y="641.5" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="650" fill="#e9f1fa" text-anchor="middle">DECISION ENGINE</text>
+<text x="600.0" y="666.5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#96aabe" text-anchor="middle">Fast reflex path  +  Contextual decisions  +  Observable explanations</text>
+<path d="M600 684 L600 705" stroke="#8297af" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="375" y="707" width="450" height="49" rx="14" fill="#111e30" stroke="#2dd4bf" stroke-opacity=".85" stroke-width="2"/>
+<text x="600.0" y="738.5" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="650" fill="#e9f1fa" text-anchor="middle">ACTIONS / TELEMETRY / FEEDBACK</text>
+<path d="M375 731 H37 V271 H89" stroke="#2dd4bf" stroke-width="2.5" fill="none" marker-end="url(#arrow)" stroke-dasharray="7 7"/>
+<text x="43" y="695" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#2dd4bf" text-anchor="start">feedback</text>
+</svg>
