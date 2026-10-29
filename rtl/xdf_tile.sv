@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 // One tile, eight configurable DAG nodes and two execution-tag slots.
 // A valid node fires once per slot; the tile schedules one operation per cycle.
 module xdf_tile #(

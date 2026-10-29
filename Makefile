@@ -4,7 +4,7 @@ RTL = rtl/xdf_pkg.sv rtl/xdf_tile.sv rtl/xdf_router.sv rtl/xdf_top.sv
 
 .PHONY: help python-test vectors reference rtl-sim rtl-lint synth clean
 help:
-	@echo "XDF-1 M1 targets: python-test vectors reference rtl-lint rtl-sim synth clean"
+	@echo "XDF-1 M1.1 targets: python-test vectors reference rtl-lint rtl-sim synth clean"
 
 python-test:
 	PYTHONPATH=python $(PYTHON) -m pytest -q tests

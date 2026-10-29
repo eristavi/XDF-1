@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 // XDF-1 top-level. Program while idle, BEGIN up to 2 tag pairs, stream tokens.
 // Result acceptance releases tag and allows reuse. Error status is sticky.
 module xdf_top (
@@ -115,7 +116,10 @@ module xdf_top (
   logic [1:0] result_sel;
   logic result_lock_valid;
   logic [1:0] result_lock_sel;
+  // Explicit combinational default prevents a latch on the arbitration index.
+  integer result_index;
   always_comb begin
+    result_index = 0;
     result_sel_valid = 1'b0;
     result_sel = 2'b0;
     tile_result_ready = 4'b0;
@@ -130,14 +134,13 @@ module xdf_top (
       tile_result_ready[result_lock_sel] = host_result_ready;
     end else begin
       for (int k = 0; k < 4; k++) begin : result_select
-        int i;
-        i = (int'(result_rr) + k) % 4;
-        if (!result_sel_valid && tile_result_valid[i]) begin
+        result_index = (int'(result_rr) + k) % 4;
+        if (!result_sel_valid && tile_result_valid[result_index]) begin
           result_sel_valid = 1'b1;
-          result_sel = 2'(i);
+          result_sel = 2'(result_index);
           host_result_valid = 1'b1;
-          host_result_token = tile_result_token[64*i +: 64];
-          tile_result_ready[i] = host_result_ready;
+          host_result_token = tile_result_token[64*result_index +: 64];
+          tile_result_ready[result_index] = host_result_ready;
         end
       end
     end

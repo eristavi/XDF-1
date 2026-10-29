@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 // 5-to-4 single-transfer router: src 0=host, src 1..4=tiles 0..3.
 // Fair round-robin among currently transferable sources; ready/valid handshake.
 module xdf_router (

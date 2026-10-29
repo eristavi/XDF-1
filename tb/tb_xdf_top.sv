@@ -249,7 +249,7 @@ module tb_xdf_top;
     if (!$value$plusargs("VECTORS=%s", vector_file))
       vector_file = "tb/reference_vectors.txt";
     vf = $fopen(vector_file, "r");
-    if (!vf)
+    if (vf == 0)
       $fatal(1, "Cannot open test vectors: %s", vector_file);
     num_cases = 0;
     while (1) begin
